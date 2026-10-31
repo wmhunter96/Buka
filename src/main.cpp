@@ -37,7 +37,11 @@ void setup() {
   Serial.setRxBufferSize(4096);
   Serial.setTxBufferSize(4096);
   Serial.begin(115200);
+#if ARDUINO_USB_CDC_ON_BOOT
+  // HWCDC only: don't block when no host is reading. A UART-bridge board
+  // (classic ESP32 DevKit) always drains at the baud rate.
   Serial.setTxTimeoutMs(0);
+#endif
   delay(1000);
 
   initSettings();
@@ -54,8 +58,8 @@ void setup() {
 
   serialLogPrintln();
   serialLogPrintln("Starting I2C");
-  serialLogPrintln("SDA = GP0");
-  serialLogPrintln("SCL = GP1");
+  serialLogPrintln((String("SDA = GPIO") + I2C_SDA).c_str());
+  serialLogPrintln((String("SCL = GPIO") + I2C_SCL).c_str());
 
   Wire.begin(
     I2C_SDA,

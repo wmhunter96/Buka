@@ -2,6 +2,8 @@
 
 Source of truth: [`include/pins.h`](../../include/pins.h). This file must match that header.
 
+Classic ESP32 DevKit variant (`pio run -e esp32-devkit`, `TE_BOARD_ESP32_DEVKIT`): different pins, see [esp32-devkit.md](esp32-devkit.md). The tables below are the stock ESP32-C3-Zero map.
+
 ## Assigned ESP32-C3-Zero GPIO
 
 | Function | ESP32-C3-Zero GPIO | Constant | Goes to |

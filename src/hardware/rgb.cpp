@@ -53,6 +53,14 @@ float easeInOut(float t) {
   return t * t * (3.0f - 2.0f * t);
 }
 
+// All hardware writes go through here so boards without an addressable LED
+// (RGB_LED_PRESENT false, e.g. classic ESP32 DevKit) never touch a pin.
+void ledOut(rgb_led_color_order_t order, uint8_t r, uint8_t g, uint8_t b) {
+  if constexpr (RGB_LED_PRESENT) {
+    rgbLedWriteOrdered(RGB_LED_PIN, order, r, g, b);
+  }
+}
+
 bool isOff(uint8_t r, uint8_t g, uint8_t b) {
   return r == 0 && g == 0 && b == 0;
 }
@@ -98,7 +106,7 @@ rgb_led_color_order_t ledColorOrderFromSettings() {
 }
 
 void writeRgb(uint8_t r, uint8_t g, uint8_t b) {
-  rgbLedWriteOrdered(RGB_LED_PIN, ledColorOrderFromSettings(), r, g, b);
+  ledOut(ledColorOrderFromSettings(), r, g, b);
   g_currentR = r;
   g_currentG = g;
   g_currentB = b;
@@ -233,7 +241,7 @@ void rgbSetupHoldWireByte(uint8_t byteIndex) {
   const uint8_t r = byteIndex == 0 ? 255 : 0;
   const uint8_t g = byteIndex == 1 ? 255 : 0;
   const uint8_t b = byteIndex == 2 ? 255 : 0;
-  rgbLedWriteOrdered(RGB_LED_PIN, LED_COLOR_ORDER_RGB, r, g, b);
+  ledOut(LED_COLOR_ORDER_RGB, r, g, b);
 }
 
 void rgbSetupHoldLogical(uint8_t r, uint8_t g, uint8_t b, const char* order) {
@@ -245,7 +253,7 @@ void rgbSetupHoldLogical(uint8_t r, uint8_t g, uint8_t b, const char* order) {
     use = order;
   }
 
-  rgbLedWriteOrdered(RGB_LED_PIN, ledColorOrderFromName(use), r, g, b);
+  ledOut(ledColorOrderFromName(use), r, g, b);
 }
 
 void rgbSetupRelease() {
