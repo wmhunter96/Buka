@@ -10,7 +10,7 @@ Firmware: `pio run -e esp32-devkit`. Pin map: the `TE_BOARD_ESP32_DEVKIT` block 
 | --- | --- | --- |
 | ESP32 DevKit (ESP32-WROOM-32) | 1 | DOIT DevKit V1 style or similar |
 | PCA9685 16-channel servo driver breakout | 1 | Adafruit 815 or clone. Address 0x40 (no address jumpers) |
-| 0.96" SSD1306 OLED, 128×64, I2C | 1 | Address 0x3C. Needs a redesigned `Head`: the stock pocket only fits the 0.91" module |
+| 0.96" SSD1306 OLED, 128×64, I2C | 1 | Address 0x3C. Print the [0.96" OLED head mod](../../mods/oled-096/README.md): the stock `Head` only fits the 0.91" module |
 | SG90 servos | 5 | |
 | MAX98357A I2S amp breakout + 8 Ω 1 W speaker | optional | Leave both out for a silent robot. Firmware runs the same; sounds just go nowhere |
 | 5 V / ≥ 2 A supply | 1 | See Power |
@@ -73,6 +73,6 @@ Wi-Fi setup, the HTTP API and the agent integrations (`npx -y tiny-engineer setu
 
 ## Head and desk fit
 
-The stock `Head` holds the 0.91" module (a long, narrow board) and is only about 15 mm deep in that direction. A 0.96" module is a roughly 27 × 27 mm square, so it does not fit; the `Head` (and probably `Hat`) need a taller OLED pocket.
+The stock `Head` holds the 0.91" module (a long, narrow board) and is only about 15 mm deep in that direction. A 0.96" module is a roughly 28 × 28 mm square, so it does not fit. Print the replacement `Head`, `Hat` and `OledCap` from [mods/oled-096](../../mods/oled-096/README.md).
 
 The desk's electronics pocket is sized for the C3-Zero. Check that the DevKit fits your printed desk, and keep its PCB antenna (the end with the zig-zag trace) clear of metal and away from the servos.
