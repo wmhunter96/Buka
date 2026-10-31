@@ -10,12 +10,7 @@
 #include "network/wifi_connect.h"
 #include "settings/settings.h"
 
-Adafruit_SSD1306 display(
-  OLED_WIDTH,
-  OLED_HEIGHT,
-  &Wire,
-  -1
-);
+TeDisplay display(&Wire);
 
 bool oledAvailable = false;
 

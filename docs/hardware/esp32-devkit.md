@@ -1,6 +1,6 @@
 # Classic ESP32 DevKit build (no main control board)
 
-Unofficial variant: a classic **ESP32 DevKit** (ESP32-WROOM-32, 30- or 38-pin, 4 MB flash) wired to breakout modules instead of the ESP32-C3-Zero and the main control board.
+Unofficial variant: a classic **ESP32 DevKit** (ESP32-WROOM-32, 30- or 38-pin, 4 MB flash) wired to breakout modules instead of the ESP32-C3-Zero and the main control board, with a **0.96" 128×64 SSD1306 OLED** instead of the 0.91" 128×32. The speaker is optional.
 
 Firmware: `pio run -e esp32-devkit`. Pin map: the `TE_BOARD_ESP32_DEVKIT` block in [`include/pins.h`](../../include/pins.h).
 
@@ -10,10 +10,9 @@ Firmware: `pio run -e esp32-devkit`. Pin map: the `TE_BOARD_ESP32_DEVKIT` block 
 | --- | --- | --- |
 | ESP32 DevKit (ESP32-WROOM-32) | 1 | DOIT DevKit V1 style or similar |
 | PCA9685 16-channel servo driver breakout | 1 | Adafruit 815 or clone. Address 0x40 (no address jumpers) |
-| MAX98357A I2S amp breakout | 1 | |
-| 0.91" SSD1306 OLED, 128×32, I2C | 1 | Address 0x3C |
+| 0.96" SSD1306 OLED, 128×64, I2C | 1 | Address 0x3C. Needs a redesigned `Head`: the stock pocket only fits the 0.91" module |
 | SG90 servos | 5 | |
-| 8 Ω 1 W speaker | 1 | |
+| MAX98357A I2S amp breakout + 8 Ω 1 W speaker | optional | Leave both out for a silent robot. Firmware runs the same; sounds just go nowhere |
 | 5 V / ≥ 2 A supply | 1 | See Power |
 
 ## Pin map
@@ -22,14 +21,20 @@ Firmware: `pio run -e esp32-devkit`. Pin map: the `TE_BOARD_ESP32_DEVKIT` block 
 | --- | --- | --- |
 | I2C SDA | **D21** | PCA9685 SDA, OLED SDA |
 | I2C SCL | **D22** | PCA9685 SCL, OLED SCL |
-| I2S BCLK | **D26** | MAX98357A BCLK |
-| I2S LRC / WS | **D25** | MAX98357A LRC |
-| I2S DIN | **D27** | MAX98357A DIN |
+| I2S BCLK | **D26** | MAX98357A BCLK (only if fitted) |
+| I2S LRC / WS | **D25** | MAX98357A LRC (only if fitted) |
+| I2S DIN | **D27** | MAX98357A DIN (only if fitted) |
 | PCA9685 OE (active low) | **D13** | PCA9685 OE |
 | 3V3 | **3V3** | PCA9685 VCC, OLED VCC |
 | GND | **GND** | every module |
 
 Avoid for add-ons: GPIO0, 2, 5, 12, 15 (boot strapping), GPIO1 and 3 (USB serial), GPIO6–11 (flash). GPIO34–39 are input-only.
+
+Most 0.96" modules are labelled **GND VCC SCL SDA** in that order (some swap GND and VCC, so read your silkscreen). VCC goes to 3V3.
+
+## OLED
+
+The faces are drawn for 128×32. On the 128×64 panel that frame is centered vertically, so the face uses the middle half of the screen and the top and bottom quarters stay dark. At the 0.96" panel's pixel pitch the face comes out about the same physical size as on the stock 0.91" screen. To build for the stock OLED again, delete `-D TE_OLED_128X64` from the `esp32-devkit` env.
 
 There is no RGB status LED on a DevKit, so the firmware's RGB status code is compiled out on this build. The OLED face and serial log still show status.
 
@@ -39,17 +44,17 @@ Servos draw far more than the DevKit's USB port and onboard regulator can supply
 
 | From | To |
 | --- | --- |
-| 5 V supply + | DevKit **VIN**, PCA9685 **V+** (servo terminal), MAX98357A **Vin** |
+| 5 V supply + | DevKit **VIN**, PCA9685 **V+** (servo terminal), MAX98357A **Vin** (if fitted) |
 | 5 V supply − | common **GND** |
 
 - PCA9685 **VCC** is 3.3 V logic from the DevKit's 3V3 pin. **V+** is the 5 V servo rail. Never connect them.
 - Don't plug the DevKit's USB cable in while the 5 V supply is feeding VIN unless your DevKit has a diode between USB 5 V and VIN (most DOIT-style boards do; check yours). Easiest habit: flash with the 5 V supply off and servos unplugged.
-- Speaker goes across MAX98357A **+** and **−**. **−** is not ground.
+- If you fit the speaker, it goes across MAX98357A **+** and **−**. **−** is not ground.
 
 ## Connect in this order
 
 1. Common GND to every module.
-2. Signals: SDA/SCL, BCLK/LRC/DIN, OE.
+2. Signals: SDA/SCL, OE (and BCLK/LRC/DIN if the amp is fitted).
 3. 3V3 to PCA9685 VCC and OLED VCC.
 4. 5 V last. Leave servo leads unplugged until the firmware has centered them.
 
@@ -66,6 +71,8 @@ pio run -e esp32-devkit -t uploadfs
 
 Wi-Fi setup, the HTTP API and the agent integrations (`npx -y tiny-engineer setup`) are the same as the stock build. The USB serial transport runs over the DevKit's USB-UART bridge at 115200 baud, which is slower than the C3's native USB, so prefer the default Wi-Fi/HTTP transport for audio playback.
 
-## Desk fit
+## Head and desk fit
+
+The stock `Head` holds the 0.91" module (a long, narrow board) and is only about 15 mm deep in that direction. A 0.96" module is a roughly 27 × 27 mm square, so it does not fit; the `Head` (and probably `Hat`) need a taller OLED pocket.
 
 The desk's electronics pocket is sized for the C3-Zero. Check that the DevKit fits your printed desk, and keep its PCB antenna (the end with the zig-zag trace) clear of metal and away from the servos.

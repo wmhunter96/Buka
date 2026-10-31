@@ -76,6 +76,15 @@ constexpr int SERVO_MAX_US = 2200;
 // OLED
 // =====================================================
 
+// OLED_WIDTH x OLED_HEIGHT is the drawing frame every face and screen uses.
 constexpr int OLED_WIDTH  = 128;
 constexpr int OLED_HEIGHT = 32;
 constexpr uint8_t OLED_ADDRESS = 0x3C;
+
+// Physical panel rows. TE_OLED_128X64: 0.96" SSD1306 128x64 module; the 128x32
+// frame is centered on it (see src/display/oled_internal.h).
+#if defined(TE_OLED_128X64)
+constexpr int OLED_PANEL_HEIGHT = 64;
+#else
+constexpr int OLED_PANEL_HEIGHT = 32;  // stock Waveshare 0.91" 128x32
+#endif
