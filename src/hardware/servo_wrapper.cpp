@@ -11,7 +11,42 @@
 #include "serial_log.h"
 #include "settings/settings.h"
 
+#if defined(TE_SERVO_DIRECT)
+// Same interface as Adafruit_PWMServoDriver, but each "channel" is an ESP32
+// GPIO driven by LEDC at 50 Hz with 12-bit duty, so the PCA9685 pulse counts
+// used below (0-4095 over 20 ms, 4096 = full off) map 1:1.
+class DirectServoPwm {
+ public:
+  void begin() {
+    for (int ch = 0; ch < SERVO_COUNT; ch++) {
+      const int pin = SERVO_DIRECT_PINS[ch];
+      if (!ledcAttach(pin, kFreqHz, kResBits)) {
+        serialLogPrint("[servo] ledc attach failed pin ");
+        serialLogPrintln(pin);
+      }
+      ledcWrite(pin, 0);
+    }
+  }
+
+  void setPWMFreq(float) {}
+
+  void setPWM(uint8_t channel, uint16_t /*on*/, uint16_t off) {
+    if (channel >= SERVO_COUNT) {
+      return;
+    }
+    // 4096 is the PCA9685 full-off bit: hold the line low, no pulses.
+    ledcWrite(SERVO_DIRECT_PINS[channel], off >= 4096 ? 0 : off);
+  }
+
+ private:
+  static constexpr uint32_t kFreqHz = 50;
+  static constexpr uint8_t kResBits = 12;
+};
+
+DirectServoPwm pwm;
+#else
 Adafruit_PWMServoDriver pwm(PCA9685_ADDRESS);
+#endif
 
 // PCA9685 LEDn_OFF full-off bit. Do not use (4096, 0) — that is full-on HIGH.
 constexpr uint16_t kPca9685FullOff = 4096;

@@ -14,6 +14,13 @@ bool pca9685Connected() {
 }
 
 void initPca9685() {
+#if defined(TE_SERVO_DIRECT)
+  serialLogPrintln();
+  serialLogPrintln("Servos on GPIO (no PCA9685)");
+  initServoPwmDriver();
+  return;
+#endif
+
   serialLogPrintln();
   serialLogPrintln("Checking PCA9685 at 0x40...");
 

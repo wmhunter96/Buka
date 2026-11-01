@@ -24,8 +24,22 @@ constexpr int I2S_DIN  = 27; // D27
 constexpr bool RGB_LED_PRESENT = false;
 constexpr int RGB_LED_PIN = -1;
 
+#if defined(TE_SERVO_DIRECT)
+// Servos driven straight from GPIO (no PCA9685), e.g. on a Goma DevKit
+// carrier. Order matches the servo index: HEAD, NECK, HAND_LEFT, HAND_RIGHT,
+// BODY (include/servos.h). No strapping pins: avoid D2, D15 (R2, R1).
+constexpr int SERVO_DIRECT_PINS[5] = {
+  23,  // HEAD       carrier L1
+  19,  // NECK       carrier L2
+  17,  // HAND_LEFT  carrier L3
+  16,  // HAND_RIGHT carrier R3
+  18,  // BODY       carrier L4
+};
+constexpr bool PCA9685_OE_WIRED = false;
+#else
 // PCA9685 output enable (active LOW). D13 → OE; not a strapping pin.
 constexpr bool PCA9685_OE_WIRED = true;
+#endif
 constexpr int PCA9685_OE_PIN = 13;  // D13
 
 #else  // ESP32-C3-Zero (stock)
