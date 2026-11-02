@@ -10,8 +10,8 @@ const golden = [
   'ace03d8dff6394548e44c18e663c016d41398ab8f909ac8be97d7154f9539fb6',
   '94930173e299ad7055f23d3676998113d895c4f9963788ba0d70800f2297ca25',
   '246dc572ccefad0e3a27c921dbc348c0ade562efa6f2fef41e44ca00aa985e87',
-  'bb3dfdae21c82b6a7fbd1139cdf1b6266dad1680947f38082705c2b7a29f3f2a',
-  'c86ac31de883a37d83228635e1bc1f3418708de8c0700d3aaed88db30fff3910',
+  'a978d2962345ea95c21d36623b66bbbc36efaea2e5bad1f07d6a297beb2fc040',
+  'cc81b3c8ff9e427abb74c001f9eaa2e3ad65f8f4e77933eef0654fa362fa64b8',
   '1b01090f343d5ef581cd60cf00fa36db793f9304ace61f2cd727f88c4ef49d7e',
   'a7baa4aae4fb360d7b3cd3f730ceef5929ef2f58721eebee62fa32bd0721f3f7',
   '2a173eebc1dd1f373dd9090072fdb133a3a2f7907bb4c302640e00b85fdc1204',
@@ -64,8 +64,8 @@ for (const set of SETS) {
 
 const assets = buildAssets();
 assert.equal(assets.animations.length, 16);
-assert.equal(assets.unique.length, 92);
-assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 18962);
+assert.equal(assets.unique.length, 93);
+assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 18008);
 assets.animations.forEach((frames, expression) => {
   assert.equal(crypto.createHash('sha256').update(Buffer.concat(frames)).digest('hex'), golden[expression]);
   frames.forEach((frame, index) => {

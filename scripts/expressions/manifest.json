@@ -28,12 +28,12 @@
     {
       "id": "curious",
       "frames": 30,
-      "sha256": "bb3dfdae21c82b6a7fbd1139cdf1b6266dad1680947f38082705c2b7a29f3f2a"
+      "sha256": "a978d2962345ea95c21d36623b66bbbc36efaea2e5bad1f07d6a297beb2fc040"
     },
     {
       "id": "thinking",
       "frames": 30,
-      "sha256": "c86ac31de883a37d83228635e1bc1f3418708de8c0700d3aaed88db30fff3910"
+      "sha256": "cc81b3c8ff9e427abb74c001f9eaa2e3ad65f8f4e77933eef0654fa362fa64b8"
     },
     {
       "id": "surprise",
@@ -87,9 +87,9 @@
     }
   ],
   "totalFrames": 480,
-  "uniqueFrames": 92,
-  "rleBytes": 18296,
+  "uniqueFrames": 93,
+  "rleBytes": 17340,
   "indexBytes": 480,
-  "offsetBytes": 186,
-  "assetBytes": 18962
+  "offsetBytes": 188,
+  "assetBytes": 18008
 }

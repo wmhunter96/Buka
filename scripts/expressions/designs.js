@@ -222,11 +222,11 @@ function rasterFace(id, t = 0) {
       break;
 
     case 'curious': {
-      const eyeOffset = t ? Math.round(Math.sin(t * 3) * 2) : 0;
-      fillOval(leftX, eyeY + eyeOffset, 6, 6);
-      fillOval(leftX, eyeY + eyeOffset, 3, 3, 0);
-      fillOval(rightX, eyeY - eyeOffset, 10, 10);
-      fillOval(rightX, eyeY - eyeOffset, 6, 6, 0);
+      // Matching eyes; the right one raised and slimmer like a lifted brow,
+      // bobbing a pixel.
+      const lift = t ? Math.round(Math.sin(t * 3)) : 0;
+      eye(leftX, 14, 9, eyeY + 1);
+      eye(rightX, 14, 7, eyeY - 3 + lift);
       mouth('flat');
       drawPath([[112, 4], [114, 2], [117, 2], [119, 4], [119, 6], [115, 9], [115, 11]], 1);
       fillRect(115, 14, 2, 2);
@@ -234,18 +234,17 @@ function rasterFace(id, t = 0) {
     }
 
     case 'thinking': {
-      // Both eyes glance up toward a thought bubble, drifting a pixel;
-      // small smile; dots cycle inside the bubble.
+      // Both eyes glance up toward a thought bubble floating on its own in the
+      // top-right (no trail, so it never reads as coming from the mouth),
+      // drifting a pixel; small smile; dots cycle inside the bubble.
       const drift = t ? Math.round(Math.sin(t * 1.6)) : 0;
       eye(leftX + 4 + drift, 14, 9, eyeY - 2);
       eye(rightX + 4 + drift, 14, 9, eyeY - 2);
       quadraticCurve(60, 23, 64, 26, 68, 23, 1);
-      fillOval(108, 25, 1.5, 1.5);
-      fillOval(113, 20, 2, 2);
-      fillOval(119, 10, 7, 5);
-      fillOval(119, 10, 5.5, 3.5, 0);
+      fillOval(119, 8, 7, 5);
+      fillOval(119, 8, 5.5, 3.5, 0);
       const dotCount = t ? 1 + Math.floor(t * 2) % 3 : 3;
-      for (let i = 0; i < dotCount; i++) fillRect(115 + i * 3, 10, 2, 1);
+      for (let i = 0; i < dotCount; i++) fillRect(115 + i * 3, 8, 2, 1);
       break;
     }
 
