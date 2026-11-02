@@ -93,7 +93,7 @@ Observe all 16 expressions, a complete 48-second cycle, the screen orientation, 
 
 ## Assets and checks
 
-The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. Kaomoji: the 480 frame references share 87 unique frames; payload and lookup tables occupy about 18.2 KiB. Gundam: 112 unique frames, about 39.9 KiB (its long diagonal fin lines encode less compactly). Each set has its own generated header (`expression_assets.h`, `gundam_assets.h`) and manifest (`scripts/expressions/manifest.json`, `gundam-manifest.json`). Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
+The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. Kaomoji: the 480 frame references share 87 unique frames; payload and lookup tables occupy about 18.2 KiB. Gundam: 111 unique frames, about 40.3 KiB (its long diagonal fin lines encode less compactly). Each set has its own generated header (`expression_assets.h`, `gundam_assets.h`) and manifest (`scripts/expressions/manifest.json`, `gundam-manifest.json`). Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
 
 From the repository root:
 

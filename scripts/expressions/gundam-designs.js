@@ -94,19 +94,19 @@ function rasterFace(id, t = 0) {
     fillRect(62, 8 - lift, 4, 1, 0);
   }
 
+  // Downward chevron centered on the mirror axis (x 63 | 64).
+  function ventChevron(y, halfWidth) {
+    drawLine(63 - halfWidth, y, 63, y + 2);
+    drawLine(64, y + 2, 64 + halfWidth, y);
+  }
+
   function faceplate(vent = 'closed') {
     drawLine(46, 21, 55, 30);
     drawLine(81, 21, 72, 30);
-    if (vent === 'open') {
-      // Vents flared open: wider slits, no ribs.
-      fillRect(57, 23, 4, 7);
-      fillRect(67, 23, 4, 7);
-    } else {
-      fillRect(58, 24, 3, 6);
-      fillRect(67, 24, 3, 6);
-      fillRect(58, 27, 3, 1, 0);
-      fillRect(67, 27, 3, 1, 0);
-    }
+    // The faceplate vent: chevrons stacked under each other, pointing down.
+    // 'open' spreads them apart (laughing, surprised, panicking).
+    const rows = vent === 'open' ? [[21, 7], [26, 5]] : [[21, 7], [24, 6], [27, 5]];
+    for (const [y, halfWidth] of rows) ventChevron(y, halfWidth);
     drawLine(55, 31, 72, 31);
   }
 
@@ -326,7 +326,6 @@ function rasterFace(id, t = 0) {
       const droop = t ? Math.max(0.15, 0.7 - t * 0.2) : 0.45;
       slit(-1, { open: droop });
       slit(1, { open: droop });
-      zee(112, 20, 4);
       break;
     }
 
