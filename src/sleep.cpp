@@ -144,3 +144,15 @@ void updateSleep(uint32_t now) {
 bool isSleeping() {
   return g_state == SleepState::Sleeping;
 }
+
+bool isDrowsy(uint32_t now) {
+  if (g_state != SleepState::Awake || wifiProvisioningMode() ||
+      getAnimation() != AnimationId::None || now < g_idleSinceMs) {
+    return false;
+  }
+
+  constexpr uint32_t kDrowsyWindowMs = 2UL * 60UL * 1000UL;
+  const uint32_t timeoutMs = settingsSleepTimeoutMs();
+  const uint32_t windowMs = kDrowsyWindowMs < timeoutMs / 2 ? kDrowsyWindowMs : timeoutMs / 2;
+  return now - g_idleSinceMs >= timeoutMs - windowMs;
+}

@@ -6,6 +6,7 @@
 
 #include "display/oled.h"
 #include "display/oled_internal.h"
+#include "sleep.h"
 
 namespace {
 
@@ -19,7 +20,8 @@ bool g_expressionArmed = false;
 expressions::Expression expressionFor(
   EyeMode mode,
   AnimationId animation,
-  EyeStyleSleepPhase sleepPhase
+  EyeStyleSleepPhase sleepPhase,
+  uint32_t now
 ) {
   if (sleepPhase == EyeStyleSleepPhase::Closing ||
       animation == AnimationId::Sleep) {
@@ -32,7 +34,8 @@ expressions::Expression expressionFor(
 
   switch (mode) {
     case EyeMode::Idle:
-      return expressions::Expression::Idle;
+      // Nodding off in the last stretch before the idle sleep.
+      return isDrowsy(now) ? expressions::Expression::Sleepy : expressions::Expression::Idle;
     case EyeMode::Typing:
     case EyeMode::Reading:
       return expressions::Expression::Reading;
@@ -71,7 +74,7 @@ void drawKaomoji(
     return;
   }
 
-  const auto expression = expressionFor(mode, animation, sleepPhase);
+  const auto expression = expressionFor(mode, animation, sleepPhase, now);
   if (!g_expressionArmed || expression != g_activeExpression) {
     g_activeExpression = expression;
     g_expressionStartedMs = now;

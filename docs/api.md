@@ -128,7 +128,7 @@ curl http://tiny-engineer.local/settings
 
 | Field | Meaning |
 | --- | --- |
-| `sleep_timeout` | Minutes of continuous animation `none` before OLED blanks (default **10**). Any non-idle animation keeps the device awake and restarts the idle clock when returning to `none`. Other APIs do not affect the timer. |
+| `sleep_timeout` | Minutes of continuous animation `none` before OLED blanks (default **10**). Any non-idle animation keeps the device awake and restarts the idle clock when returning to `none`. Other APIs do not affect the timer. With `eyes_style=kaomoji` the face turns Sleepy for the last 2 minutes of the countdown (or its second half, if shorter). |
 | `hostname` | DHCP/mDNS label without `.local` (default **`tiny-engineer`**) |
 | `volume` | Speaker gain percent for tones and WAV playback (default **70**) |
 | `welcome` | Play welcome animation on boot when Wi-Fi connects (default **true**). Also enables head/neck motion during `sleep_inertia` loading |
@@ -573,7 +573,7 @@ When `eyes_style=kaomoji`, the OLED shows looping faces from the [expression lib
 
 | Animation / phase | Face |
 | --- | --- |
-| `none` (idle) | Idle |
+| `none` (idle) | Idle; Sleepy in the last 2 minutes before `sleep_timeout` (or its second half, if shorter) |
 | `typing`, `reading` | Reading (eyes sweep back and forth) |
 | `thinking` | Thinking (one eye raised) |
 | `attention` | Curious (one eye raised, question mark) |
