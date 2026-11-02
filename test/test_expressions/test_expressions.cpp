@@ -25,7 +25,7 @@ void test_all_frames_match_original_designs() {
   // scripts/expressions/test-assets.js separately pins their SHA-256 digests.
   const uint32_t expected[] = {
     0xff62844eu, 0xa5101635u, 0xe2919a55u, 0x3376b35eu,
-    0x027380fdu, 0x94cdbc27u, 0x1fdf4c81u, 0x89025fa9u,
+    0x027380fdu, 0x1cd4fb81u, 0x1fdf4c81u, 0x89025fa9u,
     0xc9ab6b4eu, 0x8bdc177du, 0x572f1dddu, 0x2432422du,
     0xb3ab24edu, 0x4efb79e5u, 0x8b0d926du, 0x2bde1b40u
   };
