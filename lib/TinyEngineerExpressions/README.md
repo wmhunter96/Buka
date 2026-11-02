@@ -85,7 +85,7 @@ Observe all 16 expressions, a complete 48-second cycle, the screen orientation, 
 
 ## Assets and checks
 
-The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. The 480 frame references share 87 unique frames; the encoded payload and lookup tables occupy about 16.8 KiB. Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
+The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. The 480 frame references share 92 unique frames; the encoded payload and lookup tables occupy about 18.5 KiB. Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
 
 From the repository root:
 

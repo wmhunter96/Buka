@@ -234,12 +234,18 @@ function rasterFace(id, t = 0) {
     }
 
     case 'thinking': {
-      roundedRect(leftX + 3, eyeY + 1, 15, 5, 2);
-      eye(rightX + 3, 12, 8, eyeY);
-      drawLine(leftX - 9, 6, leftX + 10, 6, 2);
-      mouth('flat');
+      // Both eyes glance up toward a thought bubble, drifting a pixel;
+      // small smile; dots cycle inside the bubble.
+      const drift = t ? Math.round(Math.sin(t * 1.6)) : 0;
+      eye(leftX + 4 + drift, 14, 9, eyeY - 2);
+      eye(rightX + 4 + drift, 14, 9, eyeY - 2);
+      quadraticCurve(60, 23, 64, 26, 68, 23, 1);
+      fillOval(108, 25, 1.5, 1.5);
+      fillOval(113, 20, 2, 2);
+      fillOval(119, 10, 7, 5);
+      fillOval(119, 10, 5.5, 3.5, 0);
       const dotCount = t ? 1 + Math.floor(t * 2) % 3 : 3;
-      for (let i = 0; i < dotCount; i++) fillRect(110 + i * 4, 25, 2, 2);
+      for (let i = 0; i < dotCount; i++) fillRect(115 + i * 3, 10, 2, 1);
       break;
     }
 

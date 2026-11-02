@@ -33,7 +33,7 @@
     {
       "id": "thinking",
       "frames": 30,
-      "sha256": "b625ceadbb1d26f4111a69a1715b1acd877a7724424458e42bf38e1fea563561"
+      "sha256": "c86ac31de883a37d83228635e1bc1f3418708de8c0700d3aaed88db30fff3910"
     },
     {
       "id": "surprise",
@@ -87,9 +87,9 @@
     }
   ],
   "totalFrames": 480,
-  "uniqueFrames": 87,
-  "rleBytes": 16564,
+  "uniqueFrames": 92,
+  "rleBytes": 18296,
   "indexBytes": 480,
-  "offsetBytes": 176,
-  "assetBytes": 17220
+  "offsetBytes": 186,
+  "assetBytes": 18962
 }
