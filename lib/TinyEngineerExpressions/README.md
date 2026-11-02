@@ -1,6 +1,6 @@
 # Tiny Engineer Expressions
 
-Two sets of sixteen animated faces for a **128 × 32 monochrome OLED**: kaomoji-inspired faces (`FaceSet::Kaomoji`) and a mobile-suit helmet (`FaceSet::Gundam`). The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
+Two sets of sixteen animated faces for a **128 × 32 monochrome OLED**: kaomoji-inspired faces (`FaceSet::Kaomoji`) and a mobile-suit face (`FaceSet::Gundam`). The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
 
 This is an optional display library used by the robot when Config `eyes_style=kaomoji` or `eyes_style=gundam`. It does not replace Tiny Engineer's classic eye modes by itself. The application decides which style is active and when to show a frame. It does not access I²C, initialize a display, change its rotation, or issue servo commands.
 
@@ -29,7 +29,7 @@ The display numbers below are one-based; the enum values are zero-based and foll
 | 15 | `Shy` | Shy |
 | 16 | `Love` | Heart eyes |
 
-Both sets use the expression ids in the table above, in the same order. In the gundam set, the V-fin, crest, cheek lines, mouth vents and chin stay put and the eyes and side symbols carry each mood.
+Both sets use the expression ids in the table above, in the same order. In the gundam set, a faceplate vent of stacked downward chevrons stays put under stern slit eyes; the eyes and side symbols carry each mood.
 
 Each face has 30 frames, spaced 100 ms apart, for a repeating 3-second animation. Faces are original pixel drawings made from geometric primitives, with no external font or image dependency. Source and generated assets use the repository's [MIT license](../../LICENSE).
 
@@ -93,7 +93,7 @@ Observe all 16 expressions, a complete 48-second cycle, the screen orientation, 
 
 ## Assets and checks
 
-The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. Kaomoji: the 480 frame references share 87 unique frames; payload and lookup tables occupy about 18.2 KiB. Gundam: 111 unique frames, about 40.3 KiB (its long diagonal fin lines encode less compactly). Each set has its own generated header (`expression_assets.h`, `gundam_assets.h`) and manifest (`scripts/expressions/manifest.json`, `gundam-manifest.json`). Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
+The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. Kaomoji: the 480 frame references share 87 unique frames; payload and lookup tables occupy about 18.2 KiB. Gundam: 111 unique frames, about 22.7 KiB. Each set has its own generated header (`expression_assets.h`, `gundam_assets.h`) and manifest (`scripts/expressions/manifest.json`, `gundam-manifest.json`). Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
 
 From the repository root:
 

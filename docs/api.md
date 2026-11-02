@@ -568,7 +568,7 @@ Durations and quoted lines below are the stock clips in [`assets/`](../assets/).
 
 #### Kaomoji and gundam eyes
 
-When `eyes_style=kaomoji` or `eyes_style=gundam`, the OLED shows looping faces from the [expression library](../lib/TinyEngineerExpressions/README.md) (3 s / 30 frames). Both are 16-face sets with the same ids: kaomoji draws kaomoji-style faces, gundam draws a mobile-suit helmet (V-fin, crest, cheek lines, mouth vents, chin) whose eyes and side symbols carry the mood. Mapping:
+When `eyes_style=kaomoji` or `eyes_style=gundam`, the OLED shows looping faces from the [expression library](../lib/TinyEngineerExpressions/README.md) (3 s / 30 frames). Both are 16-face sets with the same ids: kaomoji draws kaomoji-style faces, gundam draws stern mobile-suit slit eyes over a faceplate vent of stacked downward chevrons; the eyes and side symbols carry the mood. Mapping:
 
 | Animation / phase | Face |
 | --- | --- |

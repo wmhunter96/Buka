@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Original 128x32 mobile-suit face set: one helmet (V-fin, crest, cheek
-// lines, mouth vents, chin) with sixteen eye and symbol moods. Same ids and
-// order as designs.js, so the robot's mood mapping works for either set.
+// Original 128x32 mobile-suit face set: stern slit eyes over a faceplate vent
+// of stacked downward chevrons, with sixteen eye and symbol moods. (The V-fin
+// belongs on the printed head, not the screen.) Same ids and order as
+// designs.js, so the robot's mood mapping works for either set.
 const faces = [
   { id: 'idle' },
   { id: 'happy' },
@@ -21,10 +22,11 @@ const faces = [
   { id: 'love' },
 ];
 
-// Eye centers and the helmet's mirror axis (x pairs with 127 - x).
+// Eye centers; the face mirrors around x = 63.5 (x pairs with 127 - x).
+// Eyes and vent together sit centered in the 32 rows.
 const LEFT_X = 32;
 const RIGHT_X = 95;
-const EYE_Y = 15;
+const EYE_Y = 12;
 
 // Rasterize one face at time t (seconds, 0..2.5) into 4096 one-bit pixels.
 // No fonts, gray pixels, antialiasing, display rotation, or device access.
@@ -85,34 +87,18 @@ function rasterFace(id, t = 0) {
 
   // ---- helmet -----------------------------------------------------------
 
-  function vFin(lift = 0) {
-    for (let d = 0; d < 2; d++) {
-      drawLine(64, 9 - d - lift, 26, 1 - d - lift);
-      drawLine(63, 9 - d - lift, 101, 1 - d - lift);
-    }
-    fillRect(60, 6 - lift, 8, 5);
-    fillRect(62, 8 - lift, 4, 1, 0);
-  }
-
   // Downward chevron centered on the mirror axis (x 63 | 64).
   function ventChevron(y, halfWidth) {
     drawLine(63 - halfWidth, y, 63, y + 2);
     drawLine(64, y + 2, 64 + halfWidth, y);
   }
 
-  function faceplate(vent = 'closed') {
-    drawLine(46, 21, 55, 30);
-    drawLine(81, 21, 72, 30);
-    // The faceplate vent: chevrons stacked under each other, pointing down.
-    // 'open' spreads them apart (laughing, surprised, panicking).
-    const rows = vent === 'open' ? [[21, 7], [26, 5]] : [[21, 7], [24, 6], [27, 5]];
-    for (const [y, halfWidth] of rows) ventChevron(y, halfWidth);
-    drawLine(55, 31, 72, 31);
-  }
-
-  function helmet(vent = 'closed', lift = 0) {
-    vFin(lift);
-    faceplate(vent);
+  // The faceplate vent: chevrons stacked under each other, pointing down.
+  // 'open' spreads them apart (laughing, surprised, panicking). |shift| moves
+  // the vent down a row for a bounce.
+  function helmet(vent = 'closed', shift = 0) {
+    const rows = vent === 'open' ? [[20, 7], [25, 5]] : [[20, 7], [23, 6], [26, 5]];
+    for (const [y, halfWidth] of rows) ventChevron(y + shift, halfWidth);
   }
 
   // ---- eyes ---------------------------------------------------------------
