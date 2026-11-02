@@ -47,7 +47,7 @@ export function describeReply(body, seconds) {
  * @param {{ url?: string, seconds: number }} request
  * @returns {Promise<{ ok: true, body: Record<string, unknown> } | { ok: false, error: string }>}
  */
-export async function postShow({ url, seconds }) {
+async function postShow({ url, seconds }) {
   try {
     const res = await robotFetch(
       url ?? getBaseUrl(),

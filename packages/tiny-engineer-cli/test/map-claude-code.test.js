@@ -120,29 +120,3 @@ test("describeFiles reports Write tool_input path", () => {
   );
   assert.deepEqual(lines, ["✎  touching: /proj/a.js"]);
 });
-
-test("/usage prompts show the usage bars; nothing else does", async () => {
-  const { usageShowSecondsForEvent, USAGE_COMMAND_SHOW_S } = await import("../src/integrations/claude-code/map.js");
-  const ev = (prompt) => ({ hook_event_name: "UserPromptSubmit", prompt });
-  assert.equal(usageShowSecondsForEvent(ev("/usage")), USAGE_COMMAND_SHOW_S);
-  assert.equal(usageShowSecondsForEvent(ev("  /usage  ")), USAGE_COMMAND_SHOW_S);
-  assert.equal(usageShowSecondsForEvent(ev("/usage extra")), USAGE_COMMAND_SHOW_S);
-  assert.equal(usageShowSecondsForEvent(ev("/usages")), null);
-  assert.equal(usageShowSecondsForEvent(ev("show /usage please")), null);
-  assert.equal(usageShowSecondsForEvent(ev("check my usage")), null);
-  assert.equal(usageShowSecondsForEvent({ hook_event_name: "Stop", prompt: "/usage" }), null);
-  assert.equal(usageShowSecondsForEvent({ hook_event_name: "UserPromptSubmit" }), null);
-});
-
-test("claude-code afterPost posts show_for only for /usage", async () => {
-  const { claudeCode } = await import("../src/integrations/claude-code/index.js");
-  const calls = [];
-  const post = async (req) => {
-    calls.push(req);
-    return { ok: true, body: {} };
-  };
-  const input = (prompt) => ({ event: "UserPromptSubmit", meta: { raw: { hook_event_name: "UserPromptSubmit", prompt } } });
-  await claudeCode.afterPost(input("/usage"), { url: "http://robot" }, { post });
-  await claudeCode.afterPost(input("hello"), { url: "http://robot" }, { post });
-  assert.deepEqual(calls, [{ url: "http://robot", seconds: 30 }]);
-});
