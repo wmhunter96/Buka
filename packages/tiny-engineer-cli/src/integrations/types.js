@@ -58,6 +58,7 @@
  * @property {(input: HookInput) => string | null} mapToAnim
  * @property {(input: HookInput, style: import("../util/style.js").Style) => string[]} [describeFiles]
  * @property {(input: HookInput, anim: string | null) => HookPlan} [arbitrate] Multi-session pose sharing
+ * @property {(input: HookInput, robotOpts: { url?: string, transport?: string, port?: string }) => Promise<void>} [afterPost] Extra robot requests for an event
  * @property {(ctx: HookRespondContext) => void} [respond]
  * @property {(projectRoot: string) => boolean} [detect]
  * @property {() => string} [configRelativePath]

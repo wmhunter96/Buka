@@ -27,6 +27,20 @@ const EVENT_ANIM = new Map([
   ["StopFailure", "error"],
 ]);
 
+/** How long `/usage` shows the robot's usage bars. */
+export const USAGE_COMMAND_SHOW_S = 30;
+
+/**
+ * Seconds to show the usage bars for this event, or null. Typing Claude
+ * Code's built-in `/usage` also puts the 5-hour/weekly bars on the robot.
+ * @param {{ hook_event_name?: string, prompt?: unknown }} event
+ * @returns {number | null}
+ */
+export function usageShowSecondsForEvent(event) {
+  if (event?.hook_event_name !== "UserPromptSubmit" || typeof event.prompt !== "string") return null;
+  return /^\s*\/usage(\s|$)/.test(event.prompt) ? USAGE_COMMAND_SHOW_S : null;
+}
+
 /**
  * Map a Claude Code hook payload to an animation name, or null to skip.
  * @param {{ hook_event_name?: string, tool_name?: string, source?: string, reason?: string }} event

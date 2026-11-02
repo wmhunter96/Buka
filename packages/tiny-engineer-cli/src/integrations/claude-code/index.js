@@ -7,7 +7,9 @@ import {
   planInstall,
   planUninstall,
 } from "./install.js";
-import { animationForEvent } from "./map.js";
+import { animationForEvent, usageShowSecondsForEvent } from "./map.js";
+import { postShow } from "../../commands/usage.js";
+import { resolveTransport } from "../../config/env.js";
 import {
   decide,
   defaultSessionStatePath,
@@ -92,6 +94,21 @@ export const claudeCode = {
    * @param {string | null} anim
    * @returns {import("../types.js").HookPlan}
    */
+  /**
+   * `/usage` in Claude Code also shows the robot's usage bars (HTTP only;
+   * fail-open like every hook request).
+   * @param {import("../types.js").HookInput} input
+   * @param {{ url?: string, transport?: string }} robotOpts
+   * @param {{ post?: typeof postShow }} [deps]
+   */
+  async afterPost(input, robotOpts, deps = {}) {
+    const raw = /** @type {Record<string, unknown> | undefined} */ (input.meta?.raw);
+    const seconds = raw ? usageShowSecondsForEvent(raw) : null;
+    if (seconds === null) return;
+    if (resolveTransport(robotOpts.transport).transport !== "http") return;
+    await (deps.post ?? postShow)({ url: robotOpts.url, seconds });
+  },
+
   arbitrate(input, anim) {
     const raw = /** @type {Record<string, unknown> | undefined} */ (input.meta?.raw);
     const sessionId = raw?.session_id;
