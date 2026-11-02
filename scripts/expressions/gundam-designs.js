@@ -280,9 +280,10 @@ function rasterFace(id, t = 0) {
 
     case 'curious': {
       helmet();
-      const tilt = t ? Math.round(Math.sin(t * 3) * 2) : 0;
-      slit(-1, { thick: 0.7, dy: 1 + tilt });
-      ring(1, 0.9, -1 - tilt);
+      // One slit raised and narrowed like a lifted brow, gently bobbing.
+      const tilt = t ? Math.round(Math.sin(t * 3)) : 0;
+      slit(-1, { dy: 1 });
+      slit(1, { thick: 0.75, dy: -3 + tilt });
       question(112, 3);
       break;
     }
