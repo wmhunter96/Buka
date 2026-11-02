@@ -516,7 +516,7 @@ curl http://tiny-engineer.local/anim
 
 | Field | Meaning |
 | --- | --- |
-| `animation` | `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, or `sleep` |
+| `animation` | `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, `sleep`, or `print_start` |
 
 ### `POST /anim`
 
@@ -524,7 +524,7 @@ Request an animation switch. Each animation runs at least **1s**; if the current
 
 | Param | Type | Values |
 | --- | --- | --- |
-| `name` | string | `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, `sleep` |
+| `name` | string | `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, `sleep`, `print_start` |
 
 ```bash
 curl -X POST "http://tiny-engineer.local/anim?name=typing"
@@ -565,6 +565,7 @@ Durations and quoted lines below are the stock clips in [`assets/`](../assets/).
 | `dead` | **Hold.** Out-of-power: same obstacle pose as `error`, then `dead.wav` (~3.4 s, "Insufficient resources, shutting doooooowwwwnnnn..."). **Classic eyes:** failing-display flicker (irregular heights + brief blank pulses, denser near the end of the first line); at ~1.7 s ("shutting down") eyes squeeze nearly shut (~300 ms) while head/hands collapse over **~500 ms**, hold shut briefly (~200 ms), then snap to **X X** while the drawn-out shutdown still plays. If audio fails to start, collapse immediately. Stays with X eyes and pulsing red until another animation is requested. **Kaomoji, gundam:** Sad face (no X). Does not auto-return to `none`. Requires `dead.wav` on LittleFS. |
 | `wakeup` | **One-shot** sleep-inertia wake (~5.5 s + settle), same sequence as boot `loading=sleep_inertia`. **Classic eyes:** open over 2 s (cubic ease) from closed, two blinks at 2.4 s and 3.8 s. Head rises from chin-down with a fading neck wave. Always moves head/neck/hands (API path). After completion, `GET /anim` reports `none`. Does not play welcome audio — use `welcome` for that. |
 | `sleep` | **One-shot** nod-off (~2 s). Lids droop toward nearly shut (0–0.7 s) while the head barely moves, then a small resist: lids ease back toward half open as the head starts down (0.7–1.1 s). Lids then shut and the head eases to chin-down (`SLEEP_HEAD_DOWN`, same pose `wakeup` starts from) by 2.0 s. OLED blanks when the lids hit shut (`DISPLAYOFF`). **Classic:** that lid curve. **Kaomoji, gundam:** Sleep face during the close window, then blank. Same path as the idle `sleep_timeout`. Holds `sleep` until the head settles; then `GET /anim` reports `none` while the device stays asleep until another non-`sleep`/`none` animation wakes it. After the sleep pose is still for 2 s, PWM is full-off (same limp as `none`). |
+| `print_start` | **One-shot** print-started fist pump (~2.5 s, no audio). Right hand and head rise, a short hold, a nod, then back to the `none` pose and stop. **Classic eyes:** wink (right eye squeezed shut). **Kaomoji, gundam:** Wink face. After completion, `GET /anim` reports `none`. Sent by `tiny-engineer prusalink` when a print starts ([integration.md](integration.md#3d-printer-prusalink)). |
 
 #### Kaomoji and gundam eyes
 
@@ -583,13 +584,14 @@ When `eyes_style=kaomoji` or `eyes_style=gundam`, the OLED shows looping faces f
 | `sleep` / sleep-close | Sleep |
 | sleep-open | Idle |
 | `dead` | Sad |
+| `print_start` | Wink |
 
 Wrong params return **400**:
 
 | `error` | When |
 | --- | --- |
 | `missing name` | Query param `name` absent |
-| `unknown animation` | `name` not `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, or `sleep` |
+| `unknown animation` | `name` not `none`, `typing`, `reading`, `thinking`, `talking`, `ring`, `welcome`, `attention`, `error`, `abort`, `dead`, `wakeup`, `sleep`, or `print_start` |
 
 ### `POST /play`
 
@@ -652,7 +654,7 @@ Onboard WS2812 on **GPIO10** (`RGB_LED_PIN`). Byte order is the saved `rgb_order
 
 | Animation | LED color |
 | --- | --- |
-| `typing`, `reading`, `thinking`, `talking`, `welcome`, `ring`, `wakeup` | White (full intensity) |
+| `typing`, `reading`, `thinking`, `talking`, `welcome`, `ring`, `wakeup`, `print_start` | White (full intensity) |
 | `attention`, `error`, `dead` | Red pulse: 500 ms 10%→100%, 500 ms hold 100%, 500 ms 100%→10%, repeat |
 | `abort` | Red (full intensity, solid) |
 | `none`, `sleep` | Off |

@@ -121,6 +121,7 @@ void resolveAnimationTarget(AnimationId id, uint8_t& r, uint8_t& g, uint8_t& b) 
     case AnimationId::Welcome:
     case AnimationId::Ring:
     case AnimationId::Wakeup:
+    case AnimationId::PrintStart:
       r = RGB_ANIM_WHITE;
       g = RGB_ANIM_WHITE;
       b = RGB_ANIM_WHITE;

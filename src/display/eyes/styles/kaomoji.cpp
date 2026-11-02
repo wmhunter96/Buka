@@ -56,6 +56,8 @@ expressions::Expression expressionFor(
       return expressions::Expression::Sleepy;
     case EyeMode::Dead:
       return expressions::Expression::Sad;
+    case EyeMode::PrintStart:
+      return expressions::Expression::Wink;
   }
 
   return expressions::Expression::Idle;

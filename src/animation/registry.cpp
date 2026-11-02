@@ -8,6 +8,7 @@
 #include "animation/attention.h"
 #include "animation/dead.h"
 #include "animation/error.h"
+#include "animation/print_start.h"
 #include "animation/reading.h"
 #include "animation/ring.h"
 #include "animation/sleep_anim.h"
@@ -22,6 +23,7 @@
 #include "display/eyes/modes/dead.h"
 #include "display/eyes/modes/error.h"
 #include "display/eyes/modes/idle.h"
+#include "display/eyes/modes/print_start.h"
 #include "display/eyes/modes/reading.h"
 #include "display/eyes/modes/ring.h"
 #include "display/eyes/modes/talking.h"
@@ -105,6 +107,10 @@ void startErrorAt(uint32_t /*nowMs*/) {
 
 void startAbortAt(uint32_t /*nowMs*/) {
   startAbort();
+}
+
+void startPrintStartAt(uint32_t /*nowMs*/) {
+  startPrintStart();
 }
 
 void startWakeupAt(uint32_t nowMs) {
@@ -274,6 +280,17 @@ constexpr ModeEntry kModes[] = {
     updateTalking,
     startTalkingEyes,
     updateTalkingEyes,
+  },
+  {
+    AnimationId::PrintStart,
+    EyeMode::PrintStart,
+    "print_start",
+    false,
+    -1,
+    startPrintStartAt,
+    updatePrintStart,
+    startPrintStartEyes,
+    updatePrintStartEyes,
   },
 };
 

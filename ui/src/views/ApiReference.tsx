@@ -296,6 +296,12 @@ export function ApiReference() {
             </td>
             <td>Close eyes and sleep</td>
           </tr>
+          <tr>
+            <td>
+              <code>print_start</code>
+            </td>
+            <td>Print-started fist pump with a wink</td>
+          </tr>
         </tbody>
       </table>
       <p>

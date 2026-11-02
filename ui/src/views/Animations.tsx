@@ -18,6 +18,7 @@ const ANIMATIONS = [
   ["error", "Error", "+ audio, 1 min hold"],
   ["abort", "Abort", "One-shot + audio"],
   ["dead", "Dead", "dead.wav, then X X"],
+  ["print_start", "Print start", "One-shot, wink"],
 ] as const;
 
 export function Animations() {
