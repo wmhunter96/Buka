@@ -11,7 +11,7 @@ const golden = [
   '94930173e299ad7055f23d3676998113d895c4f9963788ba0d70800f2297ca25',
   '246dc572ccefad0e3a27c921dbc348c0ade562efa6f2fef41e44ca00aa985e87',
   'a978d2962345ea95c21d36623b66bbbc36efaea2e5bad1f07d6a297beb2fc040',
-  'bb5aa4affaa91e0456b9bf9a0a429cd12cc27e9bc5b54a827a55796907069946',
+  '042f7dba18765c164ac229bd62b19d7055c4ad3036773960abe02f0da7ce0f5f',
   '1b01090f343d5ef581cd60cf00fa36db793f9304ace61f2cd727f88c4ef49d7e',
   'a7baa4aae4fb360d7b3cd3f730ceef5929ef2f58721eebee62fa32bd0721f3f7',
   '2a173eebc1dd1f373dd9090072fdb133a3a2f7907bb4c302640e00b85fdc1204',
@@ -65,7 +65,7 @@ for (const set of SETS) {
 const assets = buildAssets();
 assert.equal(assets.animations.length, 16);
 assert.equal(assets.unique.length, 93);
-assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 17548);
+assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 17322);
 assets.animations.forEach((frames, expression) => {
   assert.equal(crypto.createHash('sha256').update(Buffer.concat(frames)).digest('hex'), golden[expression]);
   frames.forEach((frame, index) => {
