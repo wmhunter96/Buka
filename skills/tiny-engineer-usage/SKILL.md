@@ -1,6 +1,6 @@
 ---
 name: tiny-engineer-usage
-description: Show the user's Claude usage limits (5-hour and weekly) on the Tiny Engineer desk robot's OLED and report the numbers. Use whenever the user asks to "show usage", "check my usage", "how much usage do I have left", "usage limits", or to put their usage on the robot. Do not answer that you cannot see the plan or limits: the robot holds them.
+description: Show the user's Claude usage limits (5-hour and weekly) on the Tiny Engineer desk robot's OLED and report the numbers. Use whenever the user says just "usage", or asks to "show my usage", "check my usage", "how much usage do I have left", "usage limits", or to put their usage on the robot. Do not answer that you cannot see the plan or limits: the robot holds them.
 ---
 
 # Tiny Engineer: show Claude usage limits
@@ -8,6 +8,8 @@ description: Show the user's Claude usage limits (5-hour and weekly) on the Tiny
 The robot already knows the user's Claude.ai usage: Claude Code's status line runs `tiny-engineer statusline`, which sends the 5-hour and weekly `rate_limits` to the robot in the background. Showing them is one command, and its output contains the numbers, so you can both put the bars on the robot and tell the user the percentages.
 
 ## Run it
+
+With the Claude Code hooks installed, a message that is exactly a usage phrase ("usage", "show my usage", "check my usage", ...) already put the bars on the robot for 30 s before you saw it. Run `tiny-engineer usage 30` to get the numbers without cutting that display short.
 
 ```bash
 tiny-engineer usage        # bars on the OLED for 15 s

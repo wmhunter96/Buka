@@ -144,7 +144,7 @@ tiny-engineer usage 60     # show for 60 s (max 600)
 tiny-engineer usage off    # hide now
 ```
 
-So any agent session can answer "show my usage", install the shared [`tiny-engineer-usage`](../skills/tiny-engineer-usage/SKILL.md) skill the same way as `tiny-engineer-play` below (for example `cp -r skills/tiny-engineer-usage ~/.claude/skills/`).
+With the Claude Code hooks installed, a message that is exactly a usage phrase ("usage", "show my usage", "check my usage", "usage limits", "how much usage do I have left", ...) shows the bars for 30 s on its own; a message that only mentions usage does not. Claude Code's built-in `/usage` never reaches hooks, so it cannot trigger the robot. So any agent session can also report the numbers, install the shared [`tiny-engineer-usage`](../skills/tiny-engineer-usage/SKILL.md) skill the same way as `tiny-engineer-play` below (for example `cp -r skills/tiny-engineer-usage ~/.claude/skills/`).
 
 The numbers come from `tiny-engineer statusline`. Set it as Claude Code's status line in `~/.claude/settings.json`:
 

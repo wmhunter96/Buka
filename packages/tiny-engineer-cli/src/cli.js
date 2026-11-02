@@ -152,6 +152,8 @@ async function runHook(out, argv, quietGlobal) {
     // Fail-open: ignore result so an offline robot never stalls the agent.
     await robotSetAnim(anim, robotOpts);
   }
+  // Extra robot requests an event implies (e.g. `/usage` shows the usage bars).
+  await integration.afterPost?.(input, robotOpts);
   if (plan?.resume) {
     await new Promise((resolve) => setTimeout(resolve, plan.resume.afterMs));
     if (plan.stillValid()) {
