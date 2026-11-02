@@ -26,7 +26,8 @@ uint16_t readWord(const uint16_t* address) {
 
 const char* const kNames[kExpressionCount] = {
     "idle", "happy", "laugh", "wink", "curious", "thinking", "surprise", "smug",
-    "sleepy", "sleep", "sad", "cry", "angry", "panic", "shy", "love"};
+    "sleepy", "sleep", "sad", "cry", "angry", "panic", "shy", "love",
+    "reading"};
 
 }  // namespace
 

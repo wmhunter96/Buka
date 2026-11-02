@@ -9,13 +9,14 @@ namespace expr = tiny_engineer::expressions;
 void test_names_and_invalid_ids() {
   const char* expected[] = {
     "idle", "happy", "laugh", "wink", "curious", "thinking", "surprise", "smug",
-    "sleepy", "sleep", "sad", "cry", "angry", "panic", "shy", "love"
+    "sleepy", "sleep", "sad", "cry", "angry", "panic", "shy", "love",
+    "reading"
   };
-  TEST_ASSERT_EQUAL_UINT32(16, expr::kExpressionCount);
+  TEST_ASSERT_EQUAL_UINT32(17, expr::kExpressionCount);
   for (size_t i = 0; i < expr::kExpressionCount; ++i) {
     TEST_ASSERT_EQUAL_STRING(expected[i], expr::name(static_cast<expr::Expression>(i)));
   }
-  for (unsigned i = 16; i <= 255; ++i) {
+  for (unsigned i = 17; i <= 255; ++i) {
     TEST_ASSERT_NULL(expr::name(static_cast<expr::Expression>(i)));
   }
 }
@@ -25,9 +26,10 @@ void test_all_frames_match_original_designs() {
   // scripts/expressions/test-assets.js separately pins their SHA-256 digests.
   const uint32_t expected[] = {
     0xff62844eu, 0xa5101635u, 0xe2919a55u, 0x3376b35eu,
-    0x027380fdu, 0x84238be8u, 0x1fdf4c81u, 0x89025fa9u,
+    0x027380fdu, 0x4c57f681u, 0x1fdf4c81u, 0x89025fa9u,
     0xc9ab6b4eu, 0x8bdc177du, 0x572f1dddu, 0x2432422du,
-    0xb3ab24edu, 0x4efb79e5u, 0x8b0d926du, 0x2bde1b40u
+    0xb3ab24edu, 0x4efb79e5u, 0x8b0d926du, 0x2bde1b40u,
+    0x84238be8u
   };
   uint8_t guarded[expr::kFrameBytes + 2];
   for (size_t e = 0; e < expr::kExpressionCount; ++e) {
@@ -54,7 +56,7 @@ void test_invalid_inputs_leave_buffer_untouched() {
   for (size_t size = 0; size < expr::kFrameBytes; ++size) {
     TEST_ASSERT_FALSE(expr::render(expr::Expression::Idle, 0, output, size));
   }
-  for (unsigned id = 16; id <= 255; ++id) {
+  for (unsigned id = 17; id <= 255; ++id) {
     TEST_ASSERT_FALSE(expr::render(static_cast<expr::Expression>(id), 0, output, sizeof output));
   }
   TEST_ASSERT_EQUAL_UINT8_ARRAY(before, output, sizeof output);

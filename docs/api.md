@@ -574,8 +574,9 @@ When `eyes_style=kaomoji`, the OLED shows looping faces from the [expression lib
 | Animation / phase | Face |
 | --- | --- |
 | `none` (idle) | Idle |
-| `typing`, `thinking` | Thinking |
-| `reading`, `attention` | Curious |
+| `typing`, `reading` | Reading (eyes sweep back and forth) |
+| `thinking` | Thinking (one eye raised) |
+| `attention` | Curious (one eye raised, question mark) |
 | `ring` | Surprise |
 | `welcome`, `talking` | Happy |
 | `error` | Angry |

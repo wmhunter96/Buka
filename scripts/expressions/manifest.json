@@ -33,7 +33,7 @@
     {
       "id": "thinking",
       "frames": 30,
-      "sha256": "042f7dba18765c164ac229bd62b19d7055c4ad3036773960abe02f0da7ce0f5f"
+      "sha256": "d0dfef65fc97f7e3e9d03e05e7e0ae547c23db18fed75ec2c26841749db9d929"
     },
     {
       "id": "surprise",
@@ -84,12 +84,17 @@
       "id": "love",
       "frames": 30,
       "sha256": "311a089f5fcffa1152324a75888b3a4f22331e4e8c0e7a0036207638ae708024"
+    },
+    {
+      "id": "reading",
+      "frames": 30,
+      "sha256": "042f7dba18765c164ac229bd62b19d7055c4ad3036773960abe02f0da7ce0f5f"
     }
   ],
-  "totalFrames": 480,
-  "uniqueFrames": 93,
-  "rleBytes": 16654,
-  "indexBytes": 480,
-  "offsetBytes": 188,
-  "assetBytes": 17322
+  "totalFrames": 510,
+  "uniqueFrames": 99,
+  "rleBytes": 17230,
+  "indexBytes": 510,
+  "offsetBytes": 200,
+  "assetBytes": 17940
 }

@@ -1,6 +1,6 @@
 # Tiny Engineer Expressions
 
-Sixteen animated, kaomoji-inspired faces for a **128 × 32 monochrome OLED**. The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
+Seventeen animated, kaomoji-inspired faces for a **128 × 32 monochrome OLED**. The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
 
 This is an optional display library used by the robot when Config `eyes_style=kaomoji`. It does not replace Tiny Engineer's classic eye modes by itself. The application decides which style is active and when to show a frame. It does not access I²C, initialize a display, change its rotation, or issue servo commands.
 
@@ -28,6 +28,7 @@ The display numbers below are one-based; the enum values are zero-based and foll
 | 14 | `Panic` | Panicked |
 | 15 | `Shy` | Shy |
 | 16 | `Love` | Heart eyes |
+| 17 | `Reading` | Eyes sweeping back and forth |
 
 Each face has 30 frames, spaced 100 ms apart, for a repeating 3-second animation. Faces are original pixel drawings made from geometric primitives, with no external font or image dependency. Source and generated assets use the repository's [MIT license](../../LICENSE).
 
@@ -64,7 +65,7 @@ The application still owns display initialization, clearing, brightness, orienta
 
 ## Standalone OLED demo
 
-[`examples/expression-demo/main.cpp`](../../examples/expression-demo/main.cpp) cycles through all 16 faces, showing each for three seconds. It schedules frames without `delay()` and uses a static 512-byte decode buffer. Adafruit SSD1306 additionally owns its normal display framebuffer.
+[`examples/expression-demo/main.cpp`](../../examples/expression-demo/main.cpp) cycles through all 17 faces, showing each for three seconds. It schedules frames without `delay()` and uses a static 512-byte decode buffer. Adafruit SSD1306 additionally owns its normal display framebuffer.
 
 The example targets the Waveshare ESP32-C3-Zero with SDA = GPIO 0, SCL = GPIO 1, and OLED address `0x3C`. Rotation defaults to 0; add `-D EXPRESSION_DEMO_ROTATION=2` to the example environment's `build_flags` for a display mounted upside down. This affects only the example, not the robot's saved settings.
 
@@ -81,11 +82,11 @@ pio run -e expression-demo -t upload
 pio device monitor -e expression-demo
 ```
 
-Observe all 16 expressions, a complete 48-second cycle, the screen orientation, and smooth frame updates. Hardware behavior must be checked on the target display before calling the library bench-tested.
+Observe all 17 expressions, a complete 51-second cycle, the screen orientation, and smooth frame updates. Hardware behavior must be checked on the target display before calling the library bench-tested.
 
 ## Assets and checks
 
-The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. The 480 frame references share 93 unique frames; the encoded payload and lookup tables occupy about 16.9 KiB. Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
+The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. The 510 frame references share 99 unique frames; the encoded payload and lookup tables occupy about 17.5 KiB. Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
 
 From the repository root:
 

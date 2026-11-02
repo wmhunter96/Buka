@@ -34,9 +34,10 @@ expressions::Expression expressionFor(
     case EyeMode::Idle:
       return expressions::Expression::Idle;
     case EyeMode::Typing:
+    case EyeMode::Reading:
+      return expressions::Expression::Reading;
     case EyeMode::Thinking:
       return expressions::Expression::Thinking;
-    case EyeMode::Reading:
     case EyeMode::Attention:
       return expressions::Expression::Curious;
     case EyeMode::Ring:

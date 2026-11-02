@@ -8,8 +8,9 @@ Every kaomoji face, rendered from the same generator data the firmware uses (eac
 | Happy | <img src="images/faces/kaomoji/happy.png" width="384" alt="Kaomoji happy"> | `welcome`, `talking` |
 | Laugh | <img src="images/faces/kaomoji/laugh.png" width="384" alt="Kaomoji laugh"> | not used yet |
 | Wink | <img src="images/faces/kaomoji/wink.png" width="384" alt="Kaomoji wink"> | `print_start` |
-| Curious | <img src="images/faces/kaomoji/curious.png" width="384" alt="Kaomoji curious"> | `reading`, `attention` |
-| Thinking | <img src="images/faces/kaomoji/thinking.png" width="384" alt="Kaomoji thinking"> | `typing`, `thinking` |
+| Curious | <img src="images/faces/kaomoji/curious.png" width="384" alt="Kaomoji curious"> | `attention` |
+| Thinking | <img src="images/faces/kaomoji/thinking.png" width="384" alt="Kaomoji thinking"> | `thinking` |
+| Reading | <img src="images/faces/kaomoji/reading.png" width="384" alt="Kaomoji reading"> | `reading`, `typing` |
 | Surprise | <img src="images/faces/kaomoji/surprise.png" width="384" alt="Kaomoji surprise"> | `ring` |
 | Smug | <img src="images/faces/kaomoji/smug.png" width="384" alt="Kaomoji smug"> | not used yet |
 | Sleepy | <img src="images/faces/kaomoji/sleepy.png" width="384" alt="Kaomoji sleepy"> | `wakeup` |

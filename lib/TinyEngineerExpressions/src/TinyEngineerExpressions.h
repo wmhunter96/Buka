@@ -38,10 +38,11 @@ enum class Expression : uint8_t {
   Angry,
   Panic,
   Shy,
-  Love
+  Love,
+  Reading
 };
 
-constexpr std::size_t kExpressionCount = 16;
+constexpr std::size_t kExpressionCount = 17;
 constexpr std::size_t kWidth = 128;
 constexpr std::size_t kHeight = 32;
 constexpr std::size_t kFrameBytes = 512;
@@ -49,7 +50,7 @@ constexpr std::size_t kFramesPerExpression = 30;
 constexpr uint32_t kFrameDurationMs = 100;
 constexpr uint32_t kLoopDurationMs = 3000;
 
-// Stable lowercase identifiers for the 16 selectable expressions; invalid
+// Stable lowercase identifiers for the 17 selectable expressions; invalid
 // enum values return nullptr.
 const char* name(Expression expression);
 

@@ -17,6 +17,7 @@ const faces = [
   { id: 'panic' },
   { id: 'shy' },
   { id: 'love' },
+  { id: 'reading' },
 ];
 
 // Rasterize the approved balanced design into exactly 4096 one-bit pixels.
@@ -234,8 +235,18 @@ function rasterFace(id, t = 0) {
     }
 
     case 'thinking': {
-      // "Hmm": both eyes roll up and drift side to side, mouth pursed to one
-      // side. No symbol next to the eyes (small blobs there read as blemishes).
+      // Curious without the question mark: matching eyes, the right one
+      // raised and slimmer like a lifted brow, bobbing a pixel.
+      const lift = t ? Math.round(Math.sin(t * 3)) : 0;
+      eye(leftX, 14, 9, eyeY + 1);
+      eye(rightX, 14, 7, eyeY - 3 + lift);
+      mouth('flat');
+      break;
+    }
+
+    case 'reading': {
+      // Eyes sweep back and forth across a line of text, mouth pursed to one
+      // side. Also used while typing. No symbol next to the eyes.
       const look = t ? Math.round(Math.sin(t * 1.6) * 4) : 4;
       eye(leftX + look, 14, 9, eyeY - 3);
       eye(rightX + look, 14, 9, eyeY - 3);

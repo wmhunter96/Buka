@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import { SETS, packPixels, encodeRle, buildAssets, generate } from './generate.js';
+import { SETS, EXPRESSION_COUNT, packPixels, encodeRle, buildAssets, generate } from './generate.js';
 
 // Frozen digests of the original uncompressed 30-frame designs.
 // These are independent of the deduplication/RLE format and generated manifest.
@@ -11,7 +11,7 @@ const golden = [
   '94930173e299ad7055f23d3676998113d895c4f9963788ba0d70800f2297ca25',
   '246dc572ccefad0e3a27c921dbc348c0ade562efa6f2fef41e44ca00aa985e87',
   'a978d2962345ea95c21d36623b66bbbc36efaea2e5bad1f07d6a297beb2fc040',
-  '042f7dba18765c164ac229bd62b19d7055c4ad3036773960abe02f0da7ce0f5f',
+  'd0dfef65fc97f7e3e9d03e05e7e0ae547c23db18fed75ec2c26841749db9d929',
   '1b01090f343d5ef581cd60cf00fa36db793f9304ace61f2cd727f88c4ef49d7e',
   'a7baa4aae4fb360d7b3cd3f730ceef5929ef2f58721eebee62fa32bd0721f3f7',
   '2a173eebc1dd1f373dd9090072fdb133a3a2f7907bb4c302640e00b85fdc1204',
@@ -21,7 +21,8 @@ const golden = [
   '885fd4ed26027755ed7fefd953b515f7a50223936dc0d517c7d3d3bf159eb971',
   'a62a4d723c7698c9d52d1c241ea2eecf5a2e200f37529ea4debeb09211b8d9e0',
   '27fbd45135ad16f1189997c22bbb3ba388894c07902651862478724c5656351e',
-  '311a089f5fcffa1152324a75888b3a4f22331e4e8c0e7a0036207638ae708024'
+  '311a089f5fcffa1152324a75888b3a4f22331e4e8c0e7a0036207638ae708024',
+  '042f7dba18765c164ac229bd62b19d7055c4ad3036773960abe02f0da7ce0f5f'
 ];
 
 const pixels = new Uint8Array(4096);
@@ -39,7 +40,7 @@ assert.deepEqual(encodeRle(Buffer.alloc(512, 7)), Buffer.from([255, 7, 255, 7, 2
 
 // Every frame of every set must decode back to its source pixels.
 function assertRoundTrip(assets, setId) {
-  assert.equal(assets.animations.length, 16, setId);
+  assert.equal(assets.animations.length, EXPRESSION_COUNT, setId);
   assert.ok(assets.unique.length <= 256 && assets.data.length <= 65535, setId);
   assets.animations.forEach((frames, expression) => {
     frames.forEach((frame, index) => {
@@ -63,9 +64,9 @@ for (const set of SETS) {
 }
 
 const assets = buildAssets();
-assert.equal(assets.animations.length, 16);
-assert.equal(assets.unique.length, 93);
-assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 17322);
+assert.equal(assets.animations.length, EXPRESSION_COUNT);
+assert.equal(assets.unique.length, 99);
+assert.equal(assets.data.length + EXPRESSION_COUNT * 30 + assets.offsets.length * 2, 17940);
 assets.animations.forEach((frames, expression) => {
   assert.equal(crypto.createHash('sha256').update(Buffer.concat(frames)).digest('hex'), golden[expression]);
   frames.forEach((frame, index) => {
@@ -82,4 +83,4 @@ assets.animations.forEach((frames, expression) => {
   });
 });
 generate(true);
-console.log('PASS: all 480 kaomoji frames match the original pixels; every set round-trips; packing, RLE limits, and generated files verified.');
+console.log('PASS: all 510 kaomoji frames match the original pixels; every set round-trips; packing, RLE limits, and generated files verified.');
