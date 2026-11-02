@@ -138,10 +138,23 @@ async function runHook(out, argv, quietGlobal) {
     return;
   }
 
-  const anim = integration.mapToAnim(input);
+  const robotOpts = { url: opts.url, transport: opts.transport, port: opts.port };
+  let anim = integration.mapToAnim(input);
+  // Multi-session IDEs share one robot: let the integration swap the pose
+  // and schedule a hand-back to a session that is still working.
+  const plan = integration.arbitrate ? integration.arbitrate(input, anim) : null;
+  if (plan) {
+    anim = plan.post;
+  }
   if (anim) {
     // Fail-open: ignore result so an offline robot never stalls the agent.
-    await robotSetAnim(anim, { url: opts.url, transport: opts.transport, port: opts.port });
+    await robotSetAnim(anim, robotOpts);
+  }
+  if (plan?.resume) {
+    await new Promise((resolve) => setTimeout(resolve, plan.resume.afterMs));
+    if (plan.stillValid()) {
+      await robotSetAnim(plan.resume.anim, robotOpts);
+    }
   }
 
   const fileLines = integration.describeFiles?.(input, localOut.style) ?? [];
@@ -153,7 +166,7 @@ async function runHook(out, argv, quietGlobal) {
 
   // Claude Code async hooks have no timeout; exit so undici connect attempts
   // cannot linger ~10s after a timed-out POST.
-  if (integration.hardExitAfterPost && anim) {
+  if (integration.hardExitAfterPost && (anim || plan?.resume)) {
     process.exit(0);
   }
   process.exitCode = 0;

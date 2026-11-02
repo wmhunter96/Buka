@@ -77,6 +77,17 @@ npx -y tiny-engineer uninstall cursor --yes # remove only Tiny Engineer hook ent
 
 This firmware repo already ships configs pointing at the **local** CLI bin for developing the package.
 
+### Several Claude Code sessions at once
+
+Claude Code hooks share one robot across sessions by `session_id` (state in `tiny-engineer-claude-sessions.json` in the OS temp folder). While another session is still working (`typing`, `reading`, `thinking`):
+
+- a session that finishes still rings the bell, then the robot returns to the working session's pose (~2.5 s later)
+- a session that closes does not put the robot to sleep; it keeps the working session's pose
+- a new session waves `welcome`, then hands back
+- `error` / `abort` play, then hand back
+
+A newer hook event always owns the pose; a hand-back is dropped if anything was posted in between. A session waiting on a permission prompt does not count as working. A session with no events for 10 minutes (crashed or killed) is forgotten.
+
 ### Hook smoke test
 
 ```bash

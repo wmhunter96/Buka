@@ -40,6 +40,14 @@
  */
 
 /**
+ * What to post for one hook event when several sessions share the robot.
+ * @typedef {object} HookPlan
+ * @property {string | null} post Pose to set now (may differ from the mapped one)
+ * @property {{ anim: string, afterMs: number } | null} resume Pose to hand back to after a one-shot
+ * @property {() => boolean} stillValid Re-checked before resuming: false once a newer event owns the pose
+ */
+
+/**
  * Integration plugin contract. Each IDE implements this shape and registers in registry.js.
  *
  * @typedef {object} Integration
@@ -49,6 +57,7 @@
  * @property {(argv: string[], stdinText: string) => HookInput | null} parseHook
  * @property {(input: HookInput) => string | null} mapToAnim
  * @property {(input: HookInput, style: import("../util/style.js").Style) => string[]} [describeFiles]
+ * @property {(input: HookInput, anim: string | null) => HookPlan} [arbitrate] Multi-session pose sharing
  * @property {(ctx: HookRespondContext) => void} [respond]
  * @property {(projectRoot: string) => boolean} [detect]
  * @property {() => string} [configRelativePath]

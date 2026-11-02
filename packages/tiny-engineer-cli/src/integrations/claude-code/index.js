@@ -8,6 +8,13 @@ import {
   planUninstall,
 } from "./install.js";
 import { animationForEvent } from "./map.js";
+import {
+  decide,
+  defaultSessionStatePath,
+  readSessionState,
+  resumeStillValid,
+  writeSessionState,
+} from "./sessions.js";
 
 /**
  * @param {string} stdinText
@@ -77,6 +84,28 @@ export const claudeCode = {
     const raw = input.meta?.raw;
     if (!raw || typeof raw !== "object") return [];
     return formatFileModifications(/** @type {Record<string, unknown>} */ (raw), style);
+  },
+
+  /**
+   * Shares the robot between concurrent sessions (see sessions.js).
+   * @param {import("../types.js").HookInput} input
+   * @param {string | null} anim
+   * @returns {import("../types.js").HookPlan}
+   */
+  arbitrate(input, anim) {
+    const raw = /** @type {Record<string, unknown> | undefined} */ (input.meta?.raw);
+    const sessionId = raw?.session_id;
+    if (typeof sessionId !== "string" || !sessionId) {
+      return { post: anim, resume: null, stillValid: () => false };
+    }
+    const path = defaultSessionStatePath();
+    const now = Date.now();
+    const { state, plan } = decide(readSessionState(path), { sessionId, event: input.event, anim }, now);
+    writeSessionState(path, state);
+    return {
+      ...plan,
+      stillValid: () => plan.resume !== null && resumeStillValid(readSessionState(path), now, plan.resume.anim),
+    };
   },
 
   // Claude Code adds SessionStart / UserPromptSubmit stdout to the model context.
