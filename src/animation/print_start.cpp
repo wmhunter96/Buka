@@ -15,7 +15,7 @@ constexpr float kReturnSpeedDegS = 60.0f;
 constexpr uint32_t kHoldMs = 1600;
 
 // Pose units are -1..1 of each joint's saved range.
-constexpr float kRightHandUp = 0.6f;
+constexpr float kRightHandUp = 1.0f;
 constexpr float kHeadUp = 0.5f;
 constexpr float kHeadNod = -0.1f;
 
