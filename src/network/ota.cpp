@@ -30,10 +30,7 @@ void showOtaProgress(unsigned int progress, unsigned int total) {
   }
 
   g_lastPercent = percent;
-
-  char line[8];
-  snprintf(line, sizeof(line), "%d%%", percent);
-  showOledText("OTA UPDATE", line);
+  showOtaFace(percent);
 }
 
 void confirmRunningFirmware() {
@@ -78,14 +75,16 @@ void startOta() {
     }
 
     serialLogPrintln(g_ota->getCommand() == U_FLASH ? "OTA: firmware" : "OTA: filesystem");
-    showOledText("OTA UPDATE", "0%");
+    // The sleep timer may have switched the panel off; show the update face.
+    wakeOled();
+    showOtaFace(0);
   });
 
   g_ota->onProgress(showOtaProgress);
 
   g_ota->onEnd([]() {
     serialLogPrintln("OTA: done, rebooting");
-    showOledText("OTA UPDATE", "Rebooting");
+    showOtaFace(100);
   });
 
   g_ota->onError([](ota_error_t error) {

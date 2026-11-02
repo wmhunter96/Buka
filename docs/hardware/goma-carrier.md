@@ -68,7 +68,7 @@ TINY_ENGINEER_URL=http://<robot IP> pio run -e buka -t ota      # firmware
 TINY_ENGINEER_URL=http://<robot IP> pio run -e buka -t otafs    # faces, sounds
 ```
 
-(In PowerShell: `$env:TINY_ENGINEER_URL='http://<robot IP>'` first.) The OLED shows `OTA UPDATE` and a percentage, then reboots. A firmware that never reconnects to Wi-Fi rolls back to the previous one on the next power cycle. More detail: [flash.md](../flash.md#over-the-air-updates-optional).
+(In PowerShell: `$env:TINY_ENGINEER_URL='http://<robot IP>'` first.) The OLED shows a happy closed-eyes face (`^ ^`) with a progress bar, then reboots (a failed update shows `OTA FAILED`). A firmware that never reconnects to Wi-Fi rolls back to the previous one on the next power cycle. More detail: [flash.md](../flash.md#over-the-air-updates-optional).
 
 ## Center the servos
 

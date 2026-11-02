@@ -44,6 +44,9 @@ void showServoProgress(
 
 void showServoTestFinished();
 
+// Wi-Fi update screen: happy closed eyes and a progress bar (0-100).
+void showOtaFace(int percent);
+
 void blankOled();
 void sleepOled();
 void wakeOled();
