@@ -444,9 +444,9 @@ Pose NVS write failure → **400** `{"ok":false,"error":"pose save failed"}` (PW
 
 ### `POST /usage`
 
-Show Claude usage limits on the OLED. On a 128x64 panel (`TE_OLED_128X64`) the 5-hour window is drawn as a bar in the spare rows above the face and the 7-day window in the rows below; the face itself is unchanged. On the stock 128x32 panel the values are accepted and stored but not drawn (`shown: false`). JSON object body. Requires Bearer when auth is enabled.
+Store Claude usage limits and show them on the OLED on request. On a 128x64 panel (`TE_OLED_128X64`) the 5-hour window is drawn as a bar in the spare rows above the face and the 7-day window in the rows below; the face itself is unchanged. The bars stay hidden until a request sends `show_for`, and hide again when it runs out. They draw only while the screen is on (not after `sleep_timeout` blanks it). On the stock 128x32 panel the values are accepted and stored but never drawn (`shown: false`). JSON object body. Requires Bearer when auth is enabled.
 
-Held in RAM only, cleared on reboot. The firmware has no wall clock, so send seconds until reset: each window hides itself once its `resets_in` runs out. Each POST replaces both windows; an absent or `null` window clears that bar, and `{}` clears both. `tiny-engineer statusline` sends these from Claude Code's status line ([integration.md](integration.md#usage-limits-on-the-oled)).
+Held in RAM only, cleared on reboot. The firmware has no wall clock, so send seconds until reset: each window drops itself once its `resets_in` runs out. An absent window keeps what is stored, `null` clears it. `tiny-engineer statusline` sends the numbers from Claude Code's status line and `tiny-engineer usage` shows them ([integration.md](integration.md#usage-limits-on-the-oled)).
 
 | Field | Type | Range |
 | --- | --- | --- |
@@ -454,22 +454,27 @@ Held in RAM only, cleared on reboot. The firmware has no wall clock, so send sec
 | `seven_day` | object or `null` | 7-day window: `used_percentage` and `resets_in` |
 | `*.used_percentage` | number | `0`–`100` |
 | `*.resets_in` | integer | `1`–`691200` seconds until the window resets |
+| `show_for` | integer | `0`–`600` seconds to show the bars from now; `0` hides them now. Absent leaves the current display window alone |
 
 ```bash
+# Store (bars stay hidden)
 curl -X POST "http://tiny-engineer.local/usage" -H "Content-Type: application/json" \
   -d '{"five_hour":{"used_percentage":38,"resets_in":8040},"seven_day":{"used_percentage":17,"resets_in":302400}}'
+# Show for 15 s
+curl -X POST "http://tiny-engineer.local/usage" -H "Content-Type: application/json" -d '{"show_for":15}'
 ```
 
 ```json
-{ "ok": true, "five_hour": { "used_percentage": 38, "resets_in": 8040 }, "seven_day": { "used_percentage": 17, "resets_in": 302400 }, "shown": true }
+{ "ok": true, "five_hour": { "used_percentage": 38, "resets_in": 8040 }, "seven_day": { "used_percentage": 17, "resets_in": 302400 }, "showing": 15, "shown": true }
 ```
 
-The reply lists what is now held (`null` for a cleared window) with the remaining `resets_in`. Wrong fields return **400** and change nothing:
+The reply lists what is now held (`null` for no data) with the remaining `resets_in`, and `showing`: seconds the bars stay visible (`0` = hidden). Wrong fields return **400** and change nothing:
 
 | `error` | When |
 | --- | --- |
 | `invalid five_hour` | `five_hour` not an object or `null`, or its `used_percentage` / `resets_in` missing or out of range |
 | `invalid seven_day` | Same for `seven_day` |
+| `invalid show_for` | `show_for` not an integer `0`–`600` |
 
 ### `POST /test/servo`
 

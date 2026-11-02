@@ -30,7 +30,7 @@ const ROUTES = [
   ["POST", "/setup/audio", "Setup AP only: play welcome.wav from LittleFS"],
   ["POST", "/setup/oled", "Setup AP only: preview OLED 180° rotation (see parameters below)"],
   ["POST", "/servos/park", "Center all servos at mid and hold PWM until reboot"],
-  ["POST", "/usage", "Show Claude usage limits on a 128x64 OLED (JSON body)"],
+  ["POST", "/usage", "Store Claude usage limits; show them on a 128x64 OLED (JSON body)"],
 ] as const;
 
 export function ApiReference() {

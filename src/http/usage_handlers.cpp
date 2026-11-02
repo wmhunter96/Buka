@@ -20,16 +20,26 @@ constexpr UsageField kFields[] = {
   {"seven_day", UsageWindowId::SevenDay},
 };
 
+enum class UsageAction : uint8_t {
+  Keep,
+  Clear,
+  Set,
+};
+
 struct UsageUpdate {
-  bool present = false;
+  UsageAction action = UsageAction::Keep;
   float usedPercent = 0.0f;
   uint32_t resetsIn = 0;
 };
 
-// Absent or null clears the window. Otherwise both fields must be valid.
+// Absent keeps the window, null clears it. Otherwise both fields must be valid.
 std::optional<UsageUpdate> readWindow(JsonVariantConst value) {
   UsageUpdate update;
-  if (value.isUnbound() || value.isNull()) {
+  if (value.isUnbound()) {
+    return update;
+  }
+  if (value.isNull()) {
+    update.action = UsageAction::Clear;
     return update;
   }
   if (!value.is<JsonObjectConst>()) {
@@ -47,7 +57,7 @@ std::optional<UsageUpdate> readWindow(JsonVariantConst value) {
     return std::nullopt;
   }
 
-  update.present = true;
+  update.action = UsageAction::Set;
   update.usedPercent = pct.as<float>();
   update.resetsIn = resetsIn.as<uint32_t>();
   return update;
@@ -86,12 +96,28 @@ void handleUsagePost(WebServer& server) {
     updates[i] = *update;
   }
 
+  const JsonVariantConst showFor = body["show_for"];
+  if (!showFor.isUnbound() &&
+      (!showFor.is<uint32_t>() || showFor.as<uint32_t>() > USAGE_SHOW_FOR_MAX_S)) {
+    sendError(server, 400, "invalid show_for");
+    return;
+  }
+
   for (size_t i = 0; i < USAGE_WINDOW_COUNT; i++) {
-    if (updates[i].present) {
-      usageSetWindow(kFields[i].id, updates[i].usedPercent, updates[i].resetsIn);
-    } else {
-      usageClearWindow(kFields[i].id);
+    switch (updates[i].action) {
+      case UsageAction::Keep:
+        break;
+      case UsageAction::Clear:
+        usageClearWindow(kFields[i].id);
+        break;
+      case UsageAction::Set:
+        usageSetWindow(kFields[i].id, updates[i].usedPercent, updates[i].resetsIn);
+        break;
     }
+  }
+
+  if (!showFor.isUnbound()) {
+    usageShowFor(showFor.as<uint32_t>());
   }
 
   JsonDocument reply;
@@ -99,6 +125,7 @@ void handleUsagePost(WebServer& server) {
   for (const UsageField& field : kFields) {
     addWindow(reply, field);
   }
+  reply["showing"] = usageShowingFor();
   reply["shown"] = oledAvailable && usageOverlaySupported();
   sendJson(server, 200, reply);
 }

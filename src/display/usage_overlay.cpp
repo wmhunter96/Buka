@@ -15,6 +15,9 @@ struct UsageWindow {
 
 UsageWindow g_windows[USAGE_WINDOW_COUNT];
 
+uint32_t g_showStartedMs = 0;
+uint32_t g_showForMs = 0;
+
 UsageWindow& windowFor(UsageWindowId id) {
   return g_windows[static_cast<size_t>(id)];
 }
@@ -48,6 +51,21 @@ bool usageWindowActive(UsageWindowId id, float& usedPercent, uint32_t& resetsInS
   usedPercent = w.usedPercent;
   resetsInSec = (w.resetsInMs - elapsed) / 1000UL;
   return true;
+}
+
+void usageShowFor(uint32_t seconds) {
+  g_showStartedMs = millis();
+  g_showForMs = seconds * 1000UL;
+}
+
+uint32_t usageShowingFor() {
+  const uint32_t elapsed = millis() - g_showStartedMs;
+  if (elapsed >= g_showForMs) {
+    g_showForMs = 0;
+    return 0;
+  }
+  // Round up so a window that is still open never reports 0.
+  return (g_showForMs - elapsed + 999UL) / 1000UL;
 }
 
 bool usageOverlaySupported() {
@@ -112,8 +130,10 @@ void TeDisplay::drawMargins() {
   const int16_t bottomTop = static_cast<int16_t>(kMarginRows + OLED_HEIGHT);
   fillRect(0, 0, OLED_WIDTH, kMarginRows, SSD1306_BLACK);
   fillRect(0, bottomTop, OLED_WIDTH, kMarginRows, SSD1306_BLACK);
-  drawUsageRow(*this, 0, "5h", UsageWindowId::FiveHour);
-  drawUsageRow(*this, bottomTop, "wk", UsageWindowId::SevenDay);
+  if (usageShowingFor() > 0) {
+    drawUsageRow(*this, 0, "5h", UsageWindowId::FiveHour);
+    drawUsageRow(*this, bottomTop, "wk", UsageWindowId::SevenDay);
+  }
 
   raw_ = false;
   cursor_x = cx;

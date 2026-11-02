@@ -115,7 +115,7 @@ curl -X POST "http://tiny-engineer.local/test/servo" -H "Content-Type: applicati
 | `PUT` | `/settings/wifi` | Replace the saved WiFi networks (JSON array of 1 to 5); first one tested in setup AP mode |
 | `POST` | `/settings/reset` | Factory reset settings to defaults (clears WiFi, keeps servo ranges, RGB mapping, and screen rotation); power-cycle to reopen setup AP |
 | `POST` | `/servos/park` | Center all servos at mid, flush pose NVS, hold PWM until reboot |
-| `POST` | `/usage` | Claude usage limits (`five_hour`, `seven_day`: `used_percentage`, `resets_in`) drawn above and below the face on a 128x64 OLED — full params in [api.md](../api.md#post-usage) |
+| `POST` | `/usage` | Store Claude usage limits (`five_hour`, `seven_day`: `used_percentage`, `resets_in`); `show_for` draws them above and below the face on a 128x64 OLED — full params in [api.md](../api.md#post-usage) |
 | `POST` | `/test/audio` | `{"ok":true,"test":"audio"}` after `runSoundTest()` |
 | `POST` | `/test/audio/bell` | `{"ok":true,"test":"bell"}` after `playBell()` |
 | `POST` | `/test/screen` | `{"ok":true,"test":"screen"}` after `runOledTest()` |
