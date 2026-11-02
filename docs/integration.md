@@ -105,6 +105,26 @@ mkdir -p ~/.cursor/skills && ln -s "$PWD/skills/tiny-engineer-play" ~/.cursor/sk
 mkdir -p ~/.gemini/antigravity/skills && ln -s "$PWD/skills/tiny-engineer-play" ~/.gemini/antigravity/skills/  # Antigravity
 ```
 
+### Usage limits on the OLED
+
+Claude Code only. On a robot with a 0.96" 128x64 OLED (`TE_OLED_128X64`), `tiny-engineer statusline` shows your Claude.ai 5-hour and weekly usage as bars above and below the face. Set it as Claude Code's status line in `~/.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y tiny-engineer statusline",
+    "refreshInterval": 60
+  }
+}
+```
+
+From a firmware checkout, use `node /path/to/packages/tiny-engineer-cli/bin/tiny-engineer.js statusline` as the command instead (no `npx` cold start, and it works before a published release includes the command; run `npm install --omit=dev` in `packages/tiny-engineer-cli` once).
+
+It reads `rate_limits` from the status line JSON, prints `model · 5h 38% (2h14m) · wk 17% (3d12h)` in the terminal, and `POST`s [`/usage`](api.md#post-usage) when a rounded percentage changes (and every 5 minutes otherwise, so a rebooted robot catches up). It uses the same user config URL and token as the hooks, HTTP transport only, with a 1.5 s timeout; an offline robot never delays the status line. Pass `--no-robot` to print only.
+
+`rate_limits` is present only on a Claude.ai subscription, after the session's first response. The robot counts each window down on its own and hides a bar once that window resets. Usage from other devices or claude.ai reaches the robot on the next status line refresh from this machine.
+
 ---
 
 ## 2. REST API (advanced / custom)

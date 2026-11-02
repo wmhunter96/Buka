@@ -12,6 +12,7 @@ import {
   runTest,
 } from "./commands/parity.js";
 import { runMonitor } from "./commands/monitor.js";
+import { runStatusline } from "./commands/statusline.js";
 import { get as getIntegration, list as listIntegrations } from "./integrations/registry.js";
 import { validateAnimName, validatePlayAnimName } from "./robot/client.js";
 import { formatRobotError, robotPlay, robotSetAnim } from "./robot/transport.js";
@@ -52,6 +53,8 @@ Commands:
   health                  Fetch health JSON/summary
   reset [--yes]           Factory-reset device (confirm or --yes)
   monitor                 Print serial LOG frames
+  statusline              Claude Code statusLine command: print model + usage
+                          limits, send them to the OLED (POST /usage, HTTP only)
 
 Options (most commands):
   --url <base>            Robot base URL (default: TINY_ENGINEER_URL, else ${DEFAULT_URL})
@@ -312,6 +315,12 @@ export async function run(argv) {
       return;
     case "monitor":
       await runMonitor(out, rest);
+      return;
+    case "statusline":
+      await runStatusline(rest);
+      // Same as Claude Code hooks: never let a timed-out connect linger and
+      // hold the status line refresh open.
+      process.exit(0);
       return;
     default:
       out.error(`Unknown command: ${command}`);
