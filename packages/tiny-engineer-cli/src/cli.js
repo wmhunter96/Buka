@@ -13,6 +13,7 @@ import {
 } from "./commands/parity.js";
 import { runMonitor } from "./commands/monitor.js";
 import { runStatusline } from "./commands/statusline.js";
+import { runUsage } from "./commands/usage.js";
 import { get as getIntegration, list as listIntegrations } from "./integrations/registry.js";
 import { validateAnimName, validatePlayAnimName } from "./robot/client.js";
 import { formatRobotError, robotPlay, robotSetAnim } from "./robot/transport.js";
@@ -54,7 +55,8 @@ Commands:
   reset [--yes]           Factory-reset device (confirm or --yes)
   monitor                 Print serial LOG frames
   statusline              Claude Code statusLine command: print model + usage
-                          limits, send them to the OLED (POST /usage, HTTP only)
+                          limits, send them to the robot (POST /usage, HTTP only)
+  usage [seconds|off]     Show the usage bars on the OLED (default 15 s)
 
 Options (most commands):
   --url <base>            Robot base URL (default: TINY_ENGINEER_URL, else ${DEFAULT_URL})
@@ -315,6 +317,9 @@ export async function run(argv) {
       return;
     case "monitor":
       await runMonitor(out, rest);
+      return;
+    case "usage":
+      await runUsage(out, rest, global.quiet);
       return;
     case "statusline":
       await runStatusline(rest);

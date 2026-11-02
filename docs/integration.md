@@ -107,7 +107,15 @@ mkdir -p ~/.gemini/antigravity/skills && ln -s "$PWD/skills/tiny-engineer-play" 
 
 ### Usage limits on the OLED
 
-Claude Code only. On a robot with a 0.96" 128x64 OLED (`TE_OLED_128X64`), `tiny-engineer statusline` shows your Claude.ai 5-hour and weekly usage as bars above and below the face. Set it as Claude Code's status line in `~/.claude/settings.json`:
+Claude Code only. On a robot with a 0.96" 128x64 OLED (`TE_OLED_128X64`), the robot can show your Claude.ai 5-hour and weekly usage as bars above and below the face. They stay hidden until you ask:
+
+```bash
+tiny-engineer usage        # show for 15 s
+tiny-engineer usage 60     # show for 60 s (max 600)
+tiny-engineer usage off    # hide now
+```
+
+The numbers come from `tiny-engineer statusline`. Set it as Claude Code's status line in `~/.claude/settings.json`:
 
 ```json
 {
@@ -123,7 +131,7 @@ From a firmware checkout, use `node /path/to/packages/tiny-engineer-cli/bin/tiny
 
 It reads `rate_limits` from the status line JSON, prints `model · 5h 38% (2h14m) · wk 17% (3d12h)` in the terminal, and `POST`s [`/usage`](api.md#post-usage) when a rounded percentage changes (and every 5 minutes otherwise, so a rebooted robot catches up). It uses the same user config URL and token as the hooks, HTTP transport only, with a 1.5 s timeout; an offline robot never delays the status line. Pass `--no-robot` to print only.
 
-`rate_limits` is present only on a Claude.ai subscription, after the session's first response. The robot counts each window down on its own and hides a bar once that window resets. Usage from other devices or claude.ai reaches the robot on the next status line refresh from this machine.
+`rate_limits` is present only on a Claude.ai subscription, after the session's first response. The status line only stores the numbers; it never shows the bars. The robot counts each window down on its own and drops a bar once that window resets. Usage from other devices or claude.ai reaches the robot on the next status line refresh from this machine.
 
 ---
 
