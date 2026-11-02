@@ -27,6 +27,7 @@ Pick a path. Depth lives in the linked pages.
 | --- | --- |
 | **Contribute a PCB** (KiCad) | [pcb.md](pcb.md) → [`hardware/`](../hardware/README.md) |
 | **HTTP API / settings** | [api.md](api.md); add a setting: [settings.md](settings.md) |
+| **OLED faces** | [faces.md](faces.md) (animated gallery of the kaomoji and gundam sets) |
 | **USB serial protocol / CLI transport** | [serial.md](serial.md) |
 | **CLI setup / REST for any IDE** | [integration.md](integration.md) |
 | **Publish npm CLI** (`tiny-engineer`) | [cli-release.md](cli-release.md) |
