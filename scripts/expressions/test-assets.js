@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import { packPixels, encodeRle, buildAssets, generate } from './generate.js';
+import { SETS, packPixels, encodeRle, buildAssets, generate } from './generate.js';
 
 // Frozen digests of the original uncompressed 30-frame designs.
 // These are independent of the deduplication/RLE format and generated manifest.
@@ -37,6 +37,31 @@ pixels[3] = 2;
 assert.throws(() => packPixels(pixels), RangeError);
 assert.deepEqual(encodeRle(Buffer.alloc(512, 7)), Buffer.from([255, 7, 255, 7, 2, 7]));
 
+// Every frame of every set must decode back to its source pixels.
+function assertRoundTrip(assets, setId) {
+  assert.equal(assets.animations.length, 16, setId);
+  assert.ok(assets.unique.length <= 256 && assets.data.length <= 65535, setId);
+  assets.animations.forEach((frames, expression) => {
+    frames.forEach((frame, index) => {
+      const id = assets.indices[expression][index];
+      const data = assets.data.subarray(assets.offsets[id], assets.offsets[id + 1]);
+      const restored = [];
+      assert.equal(data.length % 2, 0);
+      for (let i = 0; i < data.length; i += 2) {
+        assert.ok(data[i] > 0);
+        for (let run = 0; run < data[i]; run++) restored.push(data[i + 1]);
+      }
+      assert.deepEqual(Buffer.from(restored), frame, `${setId} expression ${expression}, frame ${index}`);
+    });
+  });
+}
+
+assert.deepEqual(SETS.map(set => set.id), ['kaomoji', 'gundam']);
+for (const set of SETS) {
+  assert.deepEqual(set.designs.faces.map(face => face.id), SETS[0].designs.faces.map(face => face.id), `${set.id} ids/order`);
+  assertRoundTrip(buildAssets(set), set.id);
+}
+
 const assets = buildAssets();
 assert.equal(assets.animations.length, 16);
 assert.equal(assets.unique.length, 87);
@@ -57,4 +82,4 @@ assets.animations.forEach((frames, expression) => {
   });
 });
 generate(true);
-console.log('PASS: all 480 frames match the original pixels; packing, RLE limits, and generated files verified.');
+console.log('PASS: all 480 kaomoji frames match the original pixels; every set round-trips; packing, RLE limits, and generated files verified.');

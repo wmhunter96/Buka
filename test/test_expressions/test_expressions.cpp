@@ -90,8 +90,35 @@ void test_callers_can_render_independently() {
   TEST_ASSERT_EQUAL_UINT8_ARRAY(first, again, sizeof first);
 }
 
+void test_face_sets() {
+  uint8_t legacy[expr::kFrameBytes], kaomoji[expr::kFrameBytes], gundam[expr::kFrameBytes];
+  for (size_t e = 0; e < expr::kExpressionCount; ++e) {
+    const auto id = static_cast<expr::Expression>(e);
+    bool differs = false;
+    for (uint32_t f = 0; f < expr::kFramesPerExpression; ++f) {
+      // The set-less overload is the kaomoji set.
+      TEST_ASSERT_TRUE(expr::render(id, f * 100, legacy, sizeof legacy));
+      TEST_ASSERT_TRUE(expr::render(expr::FaceSet::Kaomoji, id, f * 100, kaomoji, sizeof kaomoji));
+      TEST_ASSERT_EQUAL_UINT8_ARRAY(legacy, kaomoji, sizeof legacy);
+      // Every gundam frame decodes, and the set draws something different.
+      TEST_ASSERT_TRUE(expr::render(expr::FaceSet::Gundam, id, f * 100, gundam, sizeof gundam));
+      differs = differs || std::memcmp(kaomoji, gundam, sizeof gundam) != 0;
+    }
+    TEST_ASSERT_TRUE_MESSAGE(differs, expr::name(id));
+  }
+
+  uint8_t output[expr::kFrameBytes], before[sizeof output];
+  std::memset(output, 0xA5, sizeof output);
+  std::memcpy(before, output, sizeof output);
+  for (unsigned set = expr::kFaceSetCount; set <= 255; ++set) {
+    TEST_ASSERT_FALSE(expr::render(static_cast<expr::FaceSet>(set), expr::Expression::Idle, 0, output, sizeof output));
+  }
+  TEST_ASSERT_EQUAL_UINT8_ARRAY(before, output, sizeof output);
+}
+
 int main() {
   UNITY_BEGIN();
+  RUN_TEST(test_face_sets);
   RUN_TEST(test_names_and_invalid_ids);
   RUN_TEST(test_all_frames_match_original_designs);
   RUN_TEST(test_invalid_inputs_leave_buffer_untouched);

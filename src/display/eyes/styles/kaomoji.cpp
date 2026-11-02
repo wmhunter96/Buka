@@ -7,6 +7,10 @@
 #include "display/oled.h"
 #include "display/oled_internal.h"
 
+// Expression-playback styles: `kaomoji` and `gundam` play the 16-face sets
+// from lib/TinyEngineerExpressions with the same mood mapping; only the
+// drawings differ.
+
 namespace {
 
 namespace expressions = tiny_engineer::expressions;
@@ -57,10 +61,10 @@ expressions::Expression expressionFor(
   return expressions::Expression::Idle;
 }
 
-void drawKaomoji(
+void drawExpression(
+  expressions::FaceSet set,
   EyeMode mode,
   AnimationId animation,
-  uint32_t /*modeStartedMs*/,
   uint32_t now,
   EyeStyleSleepPhase sleepPhase
 ) {
@@ -78,6 +82,7 @@ void drawKaomoji(
   const uint32_t elapsed = now - g_expressionStartedMs;
 
   if (!expressions::render(
+        set,
         expression,
         elapsed,
         g_kaomojiFrame,
@@ -98,6 +103,26 @@ void drawKaomoji(
   display.display();
 }
 
+void drawKaomoji(
+  EyeMode mode,
+  AnimationId animation,
+  uint32_t /*modeStartedMs*/,
+  uint32_t now,
+  EyeStyleSleepPhase sleepPhase
+) {
+  drawExpression(expressions::FaceSet::Kaomoji, mode, animation, now, sleepPhase);
+}
+
+void drawGundam(
+  EyeMode mode,
+  AnimationId animation,
+  uint32_t /*modeStartedMs*/,
+  uint32_t now,
+  EyeStyleSleepPhase sleepPhase
+) {
+  drawExpression(expressions::FaceSet::Gundam, mode, animation, now, sleepPhase);
+}
+
 }  // namespace
 
 void kaomojiResetPlayback(uint32_t now) {
@@ -111,4 +136,11 @@ extern const EyeStyleRenderer kKaomojiEyeStyle = {
   false,
   false,
   drawKaomoji,
+};
+
+extern const EyeStyleRenderer kGundamEyeStyle = {
+  "gundam",
+  false,
+  false,
+  drawGundam,
 };

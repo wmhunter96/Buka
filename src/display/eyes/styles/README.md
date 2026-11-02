@@ -5,10 +5,8 @@ Extensible eye renderers selected by Config / `POST /settings` `{"eyes_style":"â
 | Id | Meaning |
 | --- | --- |
 | `classic` | Procedural rounded eyes (default) |
-| `kaomoji` | Animated faces from TinyEngineerExpressions |
-| `cover` | Full-half bars for mods with a mask with eye holes; height changes via top and/or bottom black margins |
-| `dots` | 12Ã—12 filled circles; diameter tracks pose height, center tracks pose |
-| `gundam` | Mobile-suit face: fixed V-fin, crest and faceplate; angular slit eyes that track the classic pose |
+| `kaomoji` | Animated faces from TinyEngineerExpressions (`FaceSet::Kaomoji`) |
+| `gundam` | Animated mobile-suit faces from TinyEngineerExpressions (`FaceSet::Gundam`); same mood mapping as kaomoji |
 
 ## Add a style
 

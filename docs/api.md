@@ -135,7 +135,7 @@ curl http://tiny-engineer.local/settings
 | `serial_log` | USB serial debug logging (default **false**). When off, diagnostic `Serial` output is suppressed |
 | `continuous_timeout` | Minutes a continuous animation (`typing` / `reading` / `thinking` / `talking`) may run before the firmware switches to `attention` then idle (default **5**) |
 | `loading` | Boot loading screen: `progress` (bar + large IP for 3 s) or `sleep_inertia` (eyes wake; no bar/IP). Default **`progress`**. Applies on **next reboot** |
-| `eyes_style` | OLED eyes look: `classic` (procedural rounded eyes), `kaomoji` (animated faces), `cover` (full-half bars for an eye-hole mask), `dots` (12×12 circles), or `gundam` (mobile-suit face). Default **`classic`**. Applies **immediately**. Classic, cover, dots, and gundam sequences are described under [`POST /anim`](#post-anim); kaomoji face mapping is under [Kaomoji eyes](#kaomoji-eyes); cover drawing is under [Cover eyes](#cover-eyes); dots drawing is under [Dots eyes](#dots-eyes); gundam drawing is under [Gundam eyes](#gundam-eyes) |
+| `eyes_style` | OLED eyes look: `classic` (procedural rounded eyes), `kaomoji` (animated faces), or `gundam` (animated mobile-suit faces). Default **`classic`**. Applies **immediately**. Classic sequences are described under [`POST /anim`](#post-anim); kaomoji and gundam face mapping is under [Kaomoji and gundam eyes](#kaomoji-and-gundam-eyes). A saved style that no longer exists (the removed `cover` and `dots`) falls back to `classic` on boot |
 | `access_token_set` | `true` when a non-empty access token is stored (secret itself is never returned) |
 | `link_mode` | `""` unprovisioned, `"wifi"`, or `"usb"` (connection mode; see [`serial.md`](serial.md)) |
 | `wifi_configured` | `true` when at least one WiFi network is saved |
@@ -194,7 +194,7 @@ curl -X POST "http://192.168.4.1/settings" \
 | `serial_log` | boolean | USB serial debug logging |
 | `continuous_timeout` | integer | 1–1440 minutes (positive) |
 | `loading` | string | `progress` or `sleep_inertia` |
-| `eyes_style` | string | `classic`, `kaomoji`, `cover`, `dots`, or `gundam` |
+| `eyes_style` | string | `classic`, `kaomoji`, or `gundam` |
 | `access_token` | string | 0–64 printable ASCII, no space at either end; empty string clears the token and disables auth |
 | `link_mode` | string | `wifi` or `usb`; setup Connection step uses `usb` for USB-only; Wi-Fi mode is usually set when saving networks via [`PUT /settings/wifi`](#put-settingswifi) |
 | `servo_mins` | integer array | Five integers `0`–`180` (`head, neck, left, right, body`); setup AP only; must be sent with `servo_maxs` |
@@ -546,7 +546,7 @@ curl -X POST "http://tiny-engineer.local/anim?name=none"
 { "ok": true, "animation": "typing" }
 ```
 
-Eye detail below for `eyes_style=classic` (default). With `eyes_style=cover`, the same sequences drive full-half bars ([Cover eyes](#cover-eyes)). With `eyes_style=dots`, the same sequences drive 12×12 circles ([Dots eyes](#dots-eyes)). With `eyes_style=gundam`, they drive angular slit eyes inside a fixed mobile-suit face ([Gundam eyes](#gundam-eyes)). With `eyes_style=kaomoji`, faces follow [Kaomoji eyes](#kaomoji-eyes) instead of procedural blinks, glances, flicker, or X eyes. Servo/audio behavior is the same for every style.
+Eye detail below for `eyes_style=classic` (default). With `eyes_style=kaomoji` or `gundam`, faces follow [Kaomoji and gundam eyes](#kaomoji-and-gundam-eyes) instead of procedural blinks, glances, flicker, or X eyes. Servo/audio behavior is the same for every style.
 
 Durations and quoted lines below are the stock clips in [`assets/`](../assets/). A filesystem built with `custom_audio_mod` can replace some of those WAVs. Phrase timing then follows that clip's `.cue` file on LittleFS (`/welcome.cue` and the same pattern for `attention`, `error`, `abort`, and `dead`). See [flash.md](flash.md).
 
@@ -562,13 +562,13 @@ Durations and quoted lines below are the stock clips in [`assets/`](../assets/).
 | `attention` | Friendly input-request gesture synced to `attention.wav` (~3.0 s, "pst... human.... you might want to take a look"). Moves into a calm prompt pose first (centered body/neck, head slightly up, right hand raised partway), waits until all servos stop, then plays audio with light neck/head/hand motion during playback (whisper hold → lean toward user → glance/point on "take a look"). **Classic eyes:** phased blink/look cues during audio. After audio ends (or if audio fails to start), holds a gentle waiting loop for **1 minute** (soft head/neck drifts plus occasional slight right-hand waves), then returns to `none`. Requires `attention.wav` on LittleFS (same `uploadfs` flow as `bell.wav`). |
 | `error` | Critical task-obstacle gesture synced to `error.wav` (~2.2 s, "Uh-oh. Human, we have a problem."). Moves into an obstacle-presenting pose first (body/neck angled toward the task, head concerned/down, right hand presenting the blocker, left hand indicating task area), waits until the pose settles, then plays audio with small nervous head/neck glances during playback. After audio ends (or if audio fails to start), holds a subtle blocked loop for **1 minute**, then returns to `none`. Requires `error.wav` on LittleFS (same `uploadfs` flow as `bell.wav`). |
 | `abort` | **One-shot** resigned abort gesture synced to `abort.wav` (~2.5 s, "Fine. I didn't want to finish it anyway."). Raises both hands, lifts the head, and twists the neck sideways before audio starts. During playback it shrugs, dips the head, and adds a dismissive side twist. **Classic eyes:** matching glances/squints. Requires `abort.wav` on LittleFS (same `uploadfs` flow as `bell.wav`). After completion, returns to `none` pose and `GET /anim` reports `none`. |
-| `dead` | **Hold.** Out-of-power: same obstacle pose as `error`, then `dead.wav` (~3.4 s, "Insufficient resources, shutting doooooowwwwnnnn..."). **Classic eyes:** failing-display flicker (irregular heights + brief blank pulses, denser near the end of the first line); at ~1.7 s ("shutting down") eyes squeeze nearly shut (~300 ms) while head/hands collapse over **~500 ms**, hold shut briefly (~200 ms), then snap to **X X** while the drawn-out shutdown still plays. If audio fails to start, collapse immediately. Stays with X eyes and pulsing red until another animation is requested. **Cover:** same flicker and squeeze as height changes, then both halves stay black (no X). **Dots:** same flicker and squeeze as circle size, then X marks in 12×12 boxes. **Kaomoji:** Sad face (no X). Does not auto-return to `none`. Requires `dead.wav` on LittleFS. |
+| `dead` | **Hold.** Out-of-power: same obstacle pose as `error`, then `dead.wav` (~3.4 s, "Insufficient resources, shutting doooooowwwwnnnn..."). **Classic eyes:** failing-display flicker (irregular heights + brief blank pulses, denser near the end of the first line); at ~1.7 s ("shutting down") eyes squeeze nearly shut (~300 ms) while head/hands collapse over **~500 ms**, hold shut briefly (~200 ms), then snap to **X X** while the drawn-out shutdown still plays. If audio fails to start, collapse immediately. Stays with X eyes and pulsing red until another animation is requested. **Kaomoji, gundam:** Sad face (no X). Does not auto-return to `none`. Requires `dead.wav` on LittleFS. |
 | `wakeup` | **One-shot** sleep-inertia wake (~5.5 s + settle), same sequence as boot `loading=sleep_inertia`. **Classic eyes:** open over 2 s (cubic ease) from closed, two blinks at 2.4 s and 3.8 s. Head rises from chin-down with a fading neck wave. Always moves head/neck/hands (API path). After completion, `GET /anim` reports `none`. Does not play welcome audio — use `welcome` for that. |
-| `sleep` | **One-shot** nod-off (~2 s). Lids droop toward nearly shut (0–0.7 s) while the head barely moves, then a small resist: lids ease back toward half open as the head starts down (0.7–1.1 s). Lids then shut and the head eases to chin-down (`SLEEP_HEAD_DOWN`, same pose `wakeup` starts from) by 2.0 s. OLED blanks when the lids hit shut (`DISPLAYOFF`). **Classic, cover, dots:** that lid curve. **Kaomoji:** Sleep face during the close window, then blank. Same path as the idle `sleep_timeout`. Holds `sleep` until the head settles; then `GET /anim` reports `none` while the device stays asleep until another non-`sleep`/`none` animation wakes it. After the sleep pose is still for 2 s, PWM is full-off (same limp as `none`). |
+| `sleep` | **One-shot** nod-off (~2 s). Lids droop toward nearly shut (0–0.7 s) while the head barely moves, then a small resist: lids ease back toward half open as the head starts down (0.7–1.1 s). Lids then shut and the head eases to chin-down (`SLEEP_HEAD_DOWN`, same pose `wakeup` starts from) by 2.0 s. OLED blanks when the lids hit shut (`DISPLAYOFF`). **Classic:** that lid curve. **Kaomoji, gundam:** Sleep face during the close window, then blank. Same path as the idle `sleep_timeout`. Holds `sleep` until the head settles; then `GET /anim` reports `none` while the device stays asleep until another non-`sleep`/`none` animation wakes it. After the sleep pose is still for 2 s, PWM is full-off (same limp as `none`). |
 
-#### Kaomoji eyes
+#### Kaomoji and gundam eyes
 
-When `eyes_style=kaomoji`, the OLED shows looping faces from the expression library (3 s / 30 frames). Mapping:
+When `eyes_style=kaomoji` or `eyes_style=gundam`, the OLED shows looping faces from the [expression library](../lib/TinyEngineerExpressions/README.md) (3 s / 30 frames). Both are 16-face sets with the same ids: kaomoji draws kaomoji-style faces, gundam draws a mobile-suit helmet (V-fin, crest, cheek lines, mouth vents, chin) whose eyes and side symbols carry the mood. Mapping:
 
 | Animation / phase | Face |
 | --- | --- |
@@ -583,18 +583,6 @@ When `eyes_style=kaomoji`, the OLED shows looping faces from the expression libr
 | `sleep` / sleep-close | Sleep |
 | sleep-open | Idle |
 | `dead` | Sad |
-
-#### Cover eyes
-
-When `eyes_style=cover`, each eye is a solid white rectangle filling one half of the 128×32 panel (left `x=0`, right `x=64`, width 64). Open eyes are the full 32px tall, so a mask hole of any shape over that half stays lit. Animations keep the classic pose and blink timing, but only height changes: leftover rows are black on the top and/or bottom. A blink grows both margins. A look-up leaves more black on the bottom; a look-down leaves more on the top. Horizontal glance does not move the light. The `dead` X hold paints both halves black.
-
-#### Dots eyes
-
-When `eyes_style=dots`, each eye is a filled circle. At the classic open height the circle’s bounding box is 12×12 px, centered on the classic eye. Diameter scales with rendered height (`12 * height / 14`), so blinks, squints, wide looks, and the `dead` flicker shrink or grow the dots. Height 0 draws nothing (full blink or sleep close). Glance, scan, and look-up/down move the circle with the classic center. The `dead` X hold draws X marks in 12×12 boxes at those centers. Diameter is capped at the 32 px panel height.
-
-#### Gundam eyes
-
-When `eyes_style=gundam`, the 128×32 frame shows a fixed mobile-suit face: a two-pixel V-fin across the top meeting at a forehead crest, cheek lines down to the chin, two mouth vents, and a chin line. The eyes are angular slits drawn inside each classic eye box: a straight top edge sloping down toward the center, pointed at the outer end and square-cut at the inner end. They follow the classic pose, so blinks, squints, glances, and sleep close behave as in classic; a box 2 px tall or less draws a one-pixel slit. The `dead` X hold draws X marks in the classic eye boxes without the face.
 
 Wrong params return **400**:
 

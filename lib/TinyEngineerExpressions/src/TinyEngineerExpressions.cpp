@@ -1,5 +1,6 @@
 #include "TinyEngineerExpressions.h"
 #include "expression_assets.h"
+#include "gundam_assets.h"
 
 #include <cstring>
 
@@ -28,6 +29,23 @@ const char* const kNames[kExpressionCount] = {
     "idle", "happy", "laugh", "wink", "curious", "thinking", "surprise", "smug",
     "sleepy", "sleep", "sad", "cry", "angry", "panic", "shy", "love"};
 
+// One generated asset table (expression_assets.h, gundam_assets.h, ...).
+struct AssetTable {
+  const uint8_t* rleData;
+  std::size_t rleDataSize;
+  const uint16_t* frameOffsets;
+  std::size_t uniqueFrameCount;
+  const uint8_t (*frameIndices)[kFramesPerExpression];
+};
+
+const AssetTable kTables[kFaceSetCount] = {
+    {detail::kRleData, detail::kRleDataSize, detail::kFrameOffsets,
+     detail::kUniqueFrameCount, detail::kFrameIndices},
+    {gundam_detail::kRleData, gundam_detail::kRleDataSize,
+     gundam_detail::kFrameOffsets, gundam_detail::kUniqueFrameCount,
+     gundam_detail::kFrameIndices},
+};
+
 }  // namespace
 
 const char* name(Expression expression) {
@@ -35,20 +53,23 @@ const char* name(Expression expression) {
   return index < kExpressionCount ? kNames[index] : nullptr;
 }
 
-bool render(Expression expression, uint32_t elapsedMs,
+bool render(FaceSet set, Expression expression, uint32_t elapsedMs,
             uint8_t* output, std::size_t outputSize) {
+  const auto setIndex = static_cast<uint8_t>(set);
   const auto index = static_cast<uint8_t>(expression);
-  if (index >= kExpressionCount || output == nullptr || outputSize < kFrameBytes) {
+  if (setIndex >= kFaceSetCount || index >= kExpressionCount ||
+      output == nullptr || outputSize < kFrameBytes) {
     return false;
   }
+  const AssetTable& table = kTables[setIndex];
 
   const auto frame = (elapsedMs % kLoopDurationMs) / kFrameDurationMs;
-  const auto uniqueFrame = readByte(&detail::kFrameIndices[index][frame]);
-  if (uniqueFrame >= detail::kUniqueFrameCount) return false;
+  const auto uniqueFrame = readByte(&table.frameIndices[index][frame]);
+  if (uniqueFrame >= table.uniqueFrameCount) return false;
 
-  const std::size_t begin = readWord(&detail::kFrameOffsets[uniqueFrame]);
-  const std::size_t end = readWord(&detail::kFrameOffsets[uniqueFrame + 1]);
-  if (begin > end || end > detail::kRleDataSize || (end - begin) % 2 != 0) {
+  const std::size_t begin = readWord(&table.frameOffsets[uniqueFrame]);
+  const std::size_t end = readWord(&table.frameOffsets[uniqueFrame + 1]);
+  if (begin > end || end > table.rleDataSize || (end - begin) % 2 != 0) {
     return false;
   }
 
@@ -56,7 +77,7 @@ bool render(Expression expression, uint32_t elapsedMs,
   // the caller's buffer unchanged. Every pair is an unsigned (count, value).
   std::size_t decodedSize = 0;
   for (std::size_t cursor = begin; cursor < end; cursor += 2) {
-    const auto count = readByte(&detail::kRleData[cursor]);
+    const auto count = readByte(&table.rleData[cursor]);
     if (count == 0 || count > kFrameBytes - decodedSize) return false;
     decodedSize += count;
   }
@@ -64,12 +85,17 @@ bool render(Expression expression, uint32_t elapsedMs,
 
   std::size_t written = 0;
   for (std::size_t cursor = begin; cursor < end; cursor += 2) {
-    const auto count = readByte(&detail::kRleData[cursor]);
-    const auto value = readByte(&detail::kRleData[cursor + 1]);
+    const auto count = readByte(&table.rleData[cursor]);
+    const auto value = readByte(&table.rleData[cursor + 1]);
     std::memset(output + written, value, count);
     written += count;
   }
   return true;
+}
+
+bool render(Expression expression, uint32_t elapsedMs,
+            uint8_t* output, std::size_t outputSize) {
+  return render(FaceSet::Kaomoji, expression, elapsedMs, output, outputSize);
 }
 
 }  // namespace expressions

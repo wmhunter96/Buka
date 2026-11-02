@@ -123,9 +123,8 @@ void noteStyleIfChanged() {
     strncpy(g_lastDrawnStyle, styleId, SETTINGS_EYES_STYLE_MAX_LEN);
     g_lastDrawnStyle[SETTINGS_EYES_STYLE_MAX_LEN] = '\0';
     g_forceRedraw = true;
-    if (strcmp(styleId, "kaomoji") == 0) {
-      kaomojiResetPlayback(millis());
-    }
+    // Expression styles (kaomoji, gundam) restart their face at frame 0.
+    kaomojiResetPlayback(millis());
   }
 }
 
