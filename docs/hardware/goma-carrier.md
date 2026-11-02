@@ -59,6 +59,17 @@ Needs PlatformIO (the VS Code extension, or `pip install platformio`) and Node 2
 
 The OLED should show the sleeping face, then the setup Wi-Fi steps.
 
+### Updates over Wi-Fi
+
+The `buka` env uses the dual-slot layout from [`partitions_ota.csv`](../../partitions_ota.csv) (two 1.5 MB firmware slots, 960 KB LittleFS, no coredump). The first flash on that layout has to be the USB flash above. After that, with the robot on home Wi-Fi and everything left plugged in:
+
+```
+TINY_ENGINEER_URL=http://<robot IP> pio run -e buka -t ota      # firmware
+TINY_ENGINEER_URL=http://<robot IP> pio run -e buka -t otafs    # faces, sounds
+```
+
+(In PowerShell: `$env:TINY_ENGINEER_URL='http://<robot IP>'` first.) The OLED shows `OTA UPDATE` and a percentage, then reboots. A firmware that never reconnects to Wi-Fi rolls back to the previous one on the next power cycle. More detail: [flash.md](../flash.md#over-the-air-updates-optional).
+
 ## Center the servos
 
 Same as the stock [assembly guide](../3d/assembly.md#center-a-servo):
