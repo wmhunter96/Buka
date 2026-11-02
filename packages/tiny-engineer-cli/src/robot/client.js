@@ -13,6 +13,7 @@ export const ANIM_NAMES = new Set([
   "dead",
   "wakeup",
   "sleep",
+  "print_start",
 ]);
 
 /** Allowed POST /play/<name> path segments. */

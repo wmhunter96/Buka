@@ -77,6 +77,24 @@ npx -y tiny-engineer uninstall cursor --yes # remove only Tiny Engineer hook ent
 
 This firmware repo already ships configs pointing at the **local** CLI bin for developing the package.
 
+### 3D printer (PrusaLink)
+
+`tiny-engineer prusalink` watches a Prusa printer (MK4, Core One, MINI, XL, or PrusaLink on a Pi) through its local API and animates the robot:
+
+| Printer | Robot |
+| --- | --- |
+| print starts (`→ PRINTING`) | [`print_start`](api.md#post-anim): fist pump with a wink |
+| print finishes (`PRINTING`/`PAUSED → FINISHED`) | `ring`: the bell |
+| while printing, paused, idle | nothing |
+
+```bash
+# Password: printer menu → Settings → Network → PrusaLink (user is "maker")
+tiny-engineer prusalink --printer http://192.168.1.50 --password <prusalink-password>
+tiny-engineer prusalink --printer http://192.168.1.50 --password <pw> --once   # check access
+```
+
+It polls `GET /api/v1/status` every 5 s (`--interval`) with HTTP Digest auth, or `--api-key` for PrusaLink installs that use an API key. Credentials can come from `PRUSALINK_URL`, `PRUSALINK_PASSWORD` / `PRUSALINK_API_KEY` and `PRUSALINK_USER` instead of flags. The robot URL and token come from the same user config as the hooks. A print already running when the watcher starts does not count as a start; a printer that drops off the network mid-print keeps its last state. If a Claude Code session is working when the printer event fires, the robot plays it and then returns to that session's pose. Keep it running somewhere that is always on (a home server, or a scheduled task on the PC).
+
 ### Several Claude Code sessions at once
 
 Claude Code hooks share one robot across sessions by `session_id` (state in `tiny-engineer-claude-sessions.json` in the OS temp folder). While another session is still working (`typing`, `reading`, `thinking`):

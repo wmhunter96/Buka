@@ -20,6 +20,7 @@ export const ONE_SHOT_MS = {
   wakeup: 7000,
   error: 3000,
   abort: 3500,
+  print_start: 3000,
 };
 
 /** A session with no events for this long is treated as gone (crash, kill). */

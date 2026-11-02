@@ -14,6 +14,7 @@ import {
 import { runMonitor } from "./commands/monitor.js";
 import { runStatusline } from "./commands/statusline.js";
 import { runUsage } from "./commands/usage.js";
+import { runPrusaLink } from "./commands/prusalink.js";
 import { get as getIntegration, list as listIntegrations } from "./integrations/registry.js";
 import { validateAnimName, validatePlayAnimName } from "./robot/client.js";
 import { formatRobotError, robotPlay, robotSetAnim } from "./robot/transport.js";
@@ -57,6 +58,7 @@ Commands:
   statusline              Claude Code statusLine command: print model + usage
                           limits, send them to the robot (POST /usage, HTTP only)
   usage [seconds|off]     Show the usage bars on the OLED (default 15 s)
+  prusalink               Watch a Prusa printer: print_start on start, ring on finish
 
 Options (most commands):
   --url <base>            Robot base URL (default: TINY_ENGINEER_URL, else ${DEFAULT_URL})
@@ -333,6 +335,9 @@ export async function run(argv) {
       return;
     case "usage":
       await runUsage(out, rest, global.quiet);
+      return;
+    case "prusalink":
+      await runPrusaLink(out, rest, global.quiet);
       return;
     case "statusline":
       await runStatusline(rest);
