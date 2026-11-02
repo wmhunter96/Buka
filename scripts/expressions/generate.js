@@ -5,14 +5,12 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as kaomojiDesigns from './designs.js';
-import * as gundamDesigns from './gundam-designs.js';
 const sourceDirectory = path.dirname(fileURLToPath(import.meta.url));
 
-// Face sets compiled into lib/TinyEngineerExpressions. Each set has the same
-// 16 expression ids in the same order; only the drawings differ.
+// Face sets compiled into lib/TinyEngineerExpressions (render-previews.js
+// renders the same list for docs/faces.md).
 const SETS = [
   { id: 'kaomoji', designs: kaomojiDesigns, header: 'expression_assets.h', namespace: 'detail', manifest: 'manifest.json' },
-  { id: 'gundam', designs: gundamDesigns, header: 'gundam_assets.h', namespace: 'gundam_detail', manifest: 'gundam-manifest.json' },
 ];
 
 function packPixels(pixels) {

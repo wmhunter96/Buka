@@ -41,13 +41,6 @@ enum class Expression : uint8_t {
   Love
 };
 
-// Drawing sets. Every set has the same 16 expressions in the same order.
-enum class FaceSet : uint8_t {
-  Kaomoji,
-  Gundam
-};
-
-constexpr std::size_t kFaceSetCount = 2;
 constexpr std::size_t kExpressionCount = 16;
 constexpr std::size_t kWidth = 128;
 constexpr std::size_t kHeight = 32;
@@ -66,10 +59,6 @@ const char* name(Expression expression);
 // Output is 128x32, row-major, MSB first, compatible with drawBitmap().
 // Invalid arguments or malformed assets return false without changing output.
 // A valid call writes exactly kFrameBytes and leaves any remaining bytes intact.
-bool render(FaceSet set, Expression expression, uint32_t elapsedMs,
-            uint8_t* output, std::size_t outputSize);
-
-// Same as render(FaceSet::Kaomoji, ...).
 bool render(Expression expression, uint32_t elapsedMs,
             uint8_t* output, std::size_t outputSize);
 

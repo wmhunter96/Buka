@@ -7,7 +7,6 @@ namespace {
 constexpr const char* kEyeStyleIds[] = {
   "classic",
   "kaomoji",
-  "gundam",
 };
 
 }  // namespace

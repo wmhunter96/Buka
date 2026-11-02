@@ -1,12 +1,12 @@
 # Tiny Engineer Expressions
 
-Two sets of sixteen animated faces for a **128 × 32 monochrome OLED**: kaomoji-inspired faces (`FaceSet::Kaomoji`) and a mobile-suit face (`FaceSet::Gundam`). The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
+Sixteen animated, kaomoji-inspired faces for a **128 × 32 monochrome OLED**. The C++ library renders a frame into caller-owned memory; the application decides when and where to show it.
 
-This is an optional display library used by the robot when Config `eyes_style=kaomoji` or `eyes_style=gundam`. It does not replace Tiny Engineer's classic eye modes by itself. The application decides which style is active and when to show a frame. It does not access I²C, initialize a display, change its rotation, or issue servo commands.
+This is an optional display library used by the robot when Config `eyes_style=kaomoji`. It does not replace Tiny Engineer's classic eye modes by itself. The application decides which style is active and when to show a frame. It does not access I²C, initialize a display, change its rotation, or issue servo commands.
 
 ## Faces
 
-See every face of both sets animated in the [face gallery](../../docs/faces.md).
+See every face animated in the [face gallery](../../docs/faces.md).
 
 The display numbers below are one-based; the enum values are zero-based and follow this order.
 
@@ -29,8 +29,6 @@ The display numbers below are one-based; the enum values are zero-based and foll
 | 15 | `Shy` | Shy |
 | 16 | `Love` | Heart eyes |
 
-Both sets use the expression ids in the table above, in the same order. In the gundam set, a faceplate vent of stacked downward chevrons stays put under stern slit eyes; the eyes and side symbols carry each mood.
-
 Each face has 30 frames, spaced 100 ms apart, for a repeating 3-second animation. Faces are original pixel drawings made from geometric primitives, with no external font or image dependency. Source and generated assets use the repository's [MIT license](../../LICENSE).
 
 ## Use from C++
@@ -43,17 +41,11 @@ uint8_t frame[faces::kFrameBytes]; // 512 bytes, owned by the caller
 
 bool ready = faces::render(faces::Expression::Happy, elapsedMs,
                           frame, sizeof(frame));
-
-// Same expression from the mobile-suit set:
-ready = faces::render(faces::FaceSet::Gundam, faces::Expression::Happy,
-                      elapsedMs, frame, sizeof(frame));
 ```
-
-The overload without a `FaceSet` renders `FaceSet::Kaomoji`.
 
 `render()` uses `elapsedMs` since the expression was selected. Start at zero for the first frame; elapsed time wraps within the animation every `kLoopDurationMs` (3000 ms). The function has no clock or playback state and does not delay. The caller controls updates, expression selection, and stopping. For Arduino, unsigned `millis() - startedAt` subtraction handles a timer rollover; reset or advance the start timestamp during long-running playback, as the example does.
 
-`render()` returns `false` for an invalid face set or expression, a null buffer, or a buffer smaller than `kFrameBytes`, leaving the supplied buffer unchanged. `name()` returns a stable lowercase identifier for a valid expression and `nullptr` for an invalid one. There is no dynamic allocation in the renderer.
+`render()` returns `false` for an invalid expression, a null buffer, or a buffer smaller than `kFrameBytes`, leaving the supplied buffer unchanged. `name()` returns a stable lowercase identifier for a valid expression and `nullptr` for an invalid one. There is no dynamic allocation in the renderer.
 
 The result is **row-major, MSB-first**, 16 bytes per row: pixel `(0, 0)` is bit 7 of byte 0. It is compatible with Adafruit GFX `drawBitmap()`. It is **not** the vertical-page layout returned by SSD1306 `getBuffer()`; do not copy it directly there.
 
@@ -68,7 +60,7 @@ if (faces::render(selectedExpression, elapsedMs, frame, sizeof(frame))) {
 }
 ```
 
-The application still owns display initialization, clearing, brightness, orientation, and sleep behavior. On the robot firmware, choose these looks with Config / `eyes_style=kaomoji` or `eyes_style=gundam` (default remains `classic`). Avoid two style renderers updating the same display concurrently.
+The application still owns display initialization, clearing, brightness, orientation, and sleep behavior. On the robot firmware, choose this look with Config / `eyes_style=kaomoji` (default remains `classic`). Avoid two style renderers updating the same display concurrently.
 
 ## Standalone OLED demo
 
@@ -93,7 +85,7 @@ Observe all 16 expressions, a complete 48-second cycle, the screen orientation, 
 
 ## Assets and checks
 
-The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. Kaomoji: the 480 frame references share 87 unique frames; payload and lookup tables occupy about 18.2 KiB. Gundam: 111 unique frames, about 22.7 KiB. Each set has its own generated header (`expression_assets.h`, `gundam_assets.h`) and manifest (`scripts/expressions/manifest.json`, `gundam-manifest.json`). Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
+The deterministic generator packs the pixels, deduplicates identical frames, and applies lossless byte-run encoding. The 480 frame references share 87 unique frames; the encoded payload and lookup tables occupy about 16.8 KiB. Decoding requires the caller's 512-byte output buffer rather than a table of uncompressed animation frames.
 
 From the repository root:
 
@@ -105,4 +97,4 @@ pio run
 pio run -e expression-demo
 ```
 
-Drawings live in `scripts/expressions/designs.js` (kaomoji) and `scripts/expressions/gundam-designs.js` (gundam). After editing the drawing source, regenerate assets with `node scripts/expressions/generate.js` and review the resulting pixel changes. The checks cover generated-file consistency, frame data, and the C++ renderer. Compilation and host checks do not establish I²C reliability, OLED orientation, or on-device animation quality; record those results separately in a PR.
+After editing the drawing source, regenerate assets with `node scripts/expressions/generate.js` and review the resulting pixel changes. The checks cover generated-file consistency, frame data, and the C++ renderer. Compilation and host checks do not establish I²C reliability, OLED orientation, or on-device animation quality; record those results separately in a PR.

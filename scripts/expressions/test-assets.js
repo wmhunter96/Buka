@@ -6,19 +6,19 @@ import { SETS, packPixels, encodeRle, buildAssets, generate } from './generate.j
 // Frozen digests of the original uncompressed 30-frame designs.
 // These are independent of the deduplication/RLE format and generated manifest.
 const golden = [
-  '6413f4edee0cbd53f16e7bb490a6a751e3806ba9e66ccde21c6aa3e4bcfa29b0',
+  'c44c2f5d751774a71a08b7bb30a0d8fa3005e0ac942c0fbe2afa0b8eadf7bb1a',
   'ace03d8dff6394548e44c18e663c016d41398ab8f909ac8be97d7154f9539fb6',
   '94930173e299ad7055f23d3676998113d895c4f9963788ba0d70800f2297ca25',
-  'ba70db8e958d7a1c1e8432f935e0a113d0620af7e6cafa8b678d2c0cce0c405b',
+  '246dc572ccefad0e3a27c921dbc348c0ade562efa6f2fef41e44ca00aa985e87',
   'bb3dfdae21c82b6a7fbd1139cdf1b6266dad1680947f38082705c2b7a29f3f2a',
-  '1eff7f7fdc13cdebe26a6fa8ba34304fbff97ad41b9691c962e9eb7f6bd165b0',
+  'b625ceadbb1d26f4111a69a1715b1acd877a7724424458e42bf38e1fea563561',
   '1b01090f343d5ef581cd60cf00fa36db793f9304ace61f2cd727f88c4ef49d7e',
   'a7baa4aae4fb360d7b3cd3f730ceef5929ef2f58721eebee62fa32bd0721f3f7',
   '2a173eebc1dd1f373dd9090072fdb133a3a2f7907bb4c302640e00b85fdc1204',
   'b7c465908e413777815b39ba2bdbf7490b4a275932552e1916f34a8ca09c6db3',
   '3d01ba558d2f2f1bcc2ef78a4ad57d8aa70c21859661dada925e92e8685a88df',
   'da60536d38f074526521a39c99ff16cf1404cffaf1366cb433978263489ab86b',
-  'eaa6db37e687504871b1f04563a9eeca6820464fd7978e8044cefa6ffaf7f9e6',
+  '885fd4ed26027755ed7fefd953b515f7a50223936dc0d517c7d3d3bf159eb971',
   'a62a4d723c7698c9d52d1c241ea2eecf5a2e200f37529ea4debeb09211b8d9e0',
   '27fbd45135ad16f1189997c22bbb3ba388894c07902651862478724c5656351e',
   '311a089f5fcffa1152324a75888b3a4f22331e4e8c0e7a0036207638ae708024'
@@ -56,7 +56,7 @@ function assertRoundTrip(assets, setId) {
   });
 }
 
-assert.deepEqual(SETS.map(set => set.id), ['kaomoji', 'gundam']);
+assert.deepEqual(SETS.map(set => set.id), ['kaomoji']);
 for (const set of SETS) {
   assert.deepEqual(set.designs.faces.map(face => face.id), SETS[0].designs.faces.map(face => face.id), `${set.id} ids/order`);
   assertRoundTrip(buildAssets(set), set.id);
@@ -65,7 +65,7 @@ for (const set of SETS) {
 const assets = buildAssets();
 assert.equal(assets.animations.length, 16);
 assert.equal(assets.unique.length, 87);
-assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 18624);
+assert.equal(assets.data.length + 480 + assets.offsets.length * 2, 17220);
 assets.animations.forEach((frames, expression) => {
   assert.equal(crypto.createHash('sha256').update(Buffer.concat(frames)).digest('hex'), golden[expression]);
   frames.forEach((frame, index) => {

@@ -5,8 +5,7 @@ Extensible eye renderers selected by Config / `POST /settings` `{"eyes_style":"â
 | Id | Meaning |
 | --- | --- |
 | `classic` | Procedural rounded eyes (default) |
-| `kaomoji` | Animated faces from TinyEngineerExpressions (`FaceSet::Kaomoji`) |
-| `gundam` | Animated mobile-suit faces from TinyEngineerExpressions (`FaceSet::Gundam`); same mood mapping as kaomoji |
+| `kaomoji` | Animated faces from TinyEngineerExpressions |
 
 ## Add a style
 

@@ -24,10 +24,10 @@ void test_all_frames_match_original_designs() {
   // FNV-1a over each original uncompressed 30-frame animation, before RLE.
   // scripts/expressions/test-assets.js separately pins their SHA-256 digests.
   const uint32_t expected[] = {
-    0x019fd60du, 0xa5101635u, 0xe2919a55u, 0xfb7f1da2u,
-    0x86be37c5u, 0x9988e8a7u, 0x1fdf4c81u, 0x89025fa9u,
+    0xff62844eu, 0xa5101635u, 0xe2919a55u, 0x3376b35eu,
+    0x86be37c5u, 0x2a51c83du, 0x1fdf4c81u, 0x89025fa9u,
     0xc9ab6b4eu, 0x8bdc177du, 0x572f1dddu, 0x2432422du,
-    0xe9242f32u, 0x4efb79e5u, 0x8b0d926du, 0x2bde1b40u
+    0xb3ab24edu, 0x4efb79e5u, 0x8b0d926du, 0x2bde1b40u
   };
   uint8_t guarded[expr::kFrameBytes + 2];
   for (size_t e = 0; e < expr::kExpressionCount; ++e) {
@@ -90,35 +90,8 @@ void test_callers_can_render_independently() {
   TEST_ASSERT_EQUAL_UINT8_ARRAY(first, again, sizeof first);
 }
 
-void test_face_sets() {
-  uint8_t legacy[expr::kFrameBytes], kaomoji[expr::kFrameBytes], gundam[expr::kFrameBytes];
-  for (size_t e = 0; e < expr::kExpressionCount; ++e) {
-    const auto id = static_cast<expr::Expression>(e);
-    bool differs = false;
-    for (uint32_t f = 0; f < expr::kFramesPerExpression; ++f) {
-      // The set-less overload is the kaomoji set.
-      TEST_ASSERT_TRUE(expr::render(id, f * 100, legacy, sizeof legacy));
-      TEST_ASSERT_TRUE(expr::render(expr::FaceSet::Kaomoji, id, f * 100, kaomoji, sizeof kaomoji));
-      TEST_ASSERT_EQUAL_UINT8_ARRAY(legacy, kaomoji, sizeof legacy);
-      // Every gundam frame decodes, and the set draws something different.
-      TEST_ASSERT_TRUE(expr::render(expr::FaceSet::Gundam, id, f * 100, gundam, sizeof gundam));
-      differs = differs || std::memcmp(kaomoji, gundam, sizeof gundam) != 0;
-    }
-    TEST_ASSERT_TRUE_MESSAGE(differs, expr::name(id));
-  }
-
-  uint8_t output[expr::kFrameBytes], before[sizeof output];
-  std::memset(output, 0xA5, sizeof output);
-  std::memcpy(before, output, sizeof output);
-  for (unsigned set = expr::kFaceSetCount; set <= 255; ++set) {
-    TEST_ASSERT_FALSE(expr::render(static_cast<expr::FaceSet>(set), expr::Expression::Idle, 0, output, sizeof output));
-  }
-  TEST_ASSERT_EQUAL_UINT8_ARRAY(before, output, sizeof output);
-}
-
 int main() {
   UNITY_BEGIN();
-  RUN_TEST(test_face_sets);
   RUN_TEST(test_names_and_invalid_ids);
   RUN_TEST(test_all_frames_match_original_designs);
   RUN_TEST(test_invalid_inputs_leave_buffer_untouched);

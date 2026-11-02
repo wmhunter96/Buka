@@ -17,11 +17,11 @@ async function openConfig(settings = {}) {
 
 describe("config page", () => {
   it("fills the form from the robot's settings", async () => {
-    await openConfig({ hostname: "desk-bot", volume: 35, eyes_style: "gundam" });
+    await openConfig({ hostname: "desk-bot", volume: 35, eyes_style: "kaomoji" });
 
     expect(field("Hostname").value).toBe("desk-bot");
     expect(screen.getByText("35%")).toBeTruthy();
-    expect(field("Eyes style").value).toBe("gundam");
+    expect(field("Eyes style").value).toBe("kaomoji");
   });
 
   it("saves the form without touching a saved token", async () => {

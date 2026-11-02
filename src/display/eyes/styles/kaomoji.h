@@ -2,6 +2,5 @@
 
 #include <cstdint>
 
-// Reset expression face playback (kaomoji and gundam styles) so the next
-// draw starts at frame 0.
+// Reset kaomoji face playback so the next draw starts at frame 0.
 void kaomojiResetPlayback(uint32_t now);

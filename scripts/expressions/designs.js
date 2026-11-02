@@ -122,8 +122,8 @@ function rasterFace(id, t = 0) {
   const rightX = 94;
   const eyeY = 13;
 
-  function eye(x, width = 18, height = 16, y = eyeY) {
-    roundedRect(x, y, width, Math.max(2, Math.round(height * opening)), 3);
+  function eye(x, width = 14, height = 9, y = eyeY) {
+    roundedRect(x, y, width, Math.max(2, Math.round(height * opening)), 2);
   }
 
   function arcEye(x, y = 14, width = 18) {
@@ -234,8 +234,8 @@ function rasterFace(id, t = 0) {
     }
 
     case 'thinking': {
-      roundedRect(leftX + 3, eyeY + 1, 19, 7, 2);
-      eye(rightX + 3, 14, 12, eyeY);
+      roundedRect(leftX + 3, eyeY + 1, 15, 5, 2);
+      eye(rightX + 3, 12, 8, eyeY);
       drawLine(leftX - 9, 6, leftX + 10, 6, 2);
       mouth('flat');
       const dotCount = t ? 1 + Math.floor(t * 2) % 3 : 3;
@@ -312,8 +312,8 @@ function rasterFace(id, t = 0) {
       break;
 
     case 'angry':
-      eye(leftX, 18, 12, 16);
-      eye(rightX, 18, 12, 16);
+      eye(leftX, 14, 8, 18);
+      eye(rightX, 14, 8, 18);
       drawPath([[leftX - 12, 5], [leftX + 10, 12]], 3);
       drawPath([[rightX - 10, 12], [rightX + 12, 5]], 3);
       mouth('sad');

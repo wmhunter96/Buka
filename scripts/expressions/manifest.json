@@ -8,7 +8,7 @@
     {
       "id": "idle",
       "frames": 30,
-      "sha256": "6413f4edee0cbd53f16e7bb490a6a751e3806ba9e66ccde21c6aa3e4bcfa29b0"
+      "sha256": "c44c2f5d751774a71a08b7bb30a0d8fa3005e0ac942c0fbe2afa0b8eadf7bb1a"
     },
     {
       "id": "happy",
@@ -23,7 +23,7 @@
     {
       "id": "wink",
       "frames": 30,
-      "sha256": "ba70db8e958d7a1c1e8432f935e0a113d0620af7e6cafa8b678d2c0cce0c405b"
+      "sha256": "246dc572ccefad0e3a27c921dbc348c0ade562efa6f2fef41e44ca00aa985e87"
     },
     {
       "id": "curious",
@@ -33,7 +33,7 @@
     {
       "id": "thinking",
       "frames": 30,
-      "sha256": "1eff7f7fdc13cdebe26a6fa8ba34304fbff97ad41b9691c962e9eb7f6bd165b0"
+      "sha256": "b625ceadbb1d26f4111a69a1715b1acd877a7724424458e42bf38e1fea563561"
     },
     {
       "id": "surprise",
@@ -68,7 +68,7 @@
     {
       "id": "angry",
       "frames": 30,
-      "sha256": "eaa6db37e687504871b1f04563a9eeca6820464fd7978e8044cefa6ffaf7f9e6"
+      "sha256": "885fd4ed26027755ed7fefd953b515f7a50223936dc0d517c7d3d3bf159eb971"
     },
     {
       "id": "panic",
@@ -88,8 +88,8 @@
   ],
   "totalFrames": 480,
   "uniqueFrames": 87,
-  "rleBytes": 17968,
+  "rleBytes": 16564,
   "indexBytes": 480,
   "offsetBytes": 176,
-  "assetBytes": 18624
+  "assetBytes": 17220
 }

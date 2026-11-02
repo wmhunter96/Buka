@@ -52,10 +52,10 @@ void test_loading() {
 void test_eyes_style() {
   TEST_ASSERT_TRUE(settingsValidateEyesStyle("classic"));
   TEST_ASSERT_TRUE(settingsValidateEyesStyle("kaomoji"));
-  TEST_ASSERT_TRUE(settingsValidateEyesStyle("gundam"));
   // Removed styles: a saved value falls back to the default on load.
   TEST_ASSERT_FALSE(settingsValidateEyesStyle("cover"));
   TEST_ASSERT_FALSE(settingsValidateEyesStyle("dots"));
+  TEST_ASSERT_FALSE(settingsValidateEyesStyle("gundam"));
   TEST_ASSERT_FALSE(settingsValidateEyesStyle("other"));
   TEST_ASSERT_FALSE(settingsValidateEyesStyle(nullptr));
 }
