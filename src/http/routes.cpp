@@ -43,6 +43,7 @@ constexpr Route kRoutes[] = {
   {"/setup/audio", HTTP_POST, handleSetupAudio, Access::Setup},
   {"/setup/oled", HTTP_POST, handleSetupOled, Access::Setup},
   {"/servos/park", HTTP_POST, handleServosPark, Access::Token},
+  {"/usage", HTTP_POST, handleUsagePost, Access::Token},
 };
 
 bool isKnownPath(const String& uri) {

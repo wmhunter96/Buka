@@ -442,6 +442,35 @@ tiny-engineer park --transport serial
 
 Pose NVS write failure → **400** `{"ok":false,"error":"pose save failed"}` (PWM hold is still armed). Details: [hardware/servos.md](hardware/servos.md#flash-safe-park).
 
+### `POST /usage`
+
+Show Claude usage limits on the OLED. On a 128x64 panel (`TE_OLED_128X64`) the 5-hour window is drawn as a bar in the spare rows above the face and the 7-day window in the rows below; the face itself is unchanged. On the stock 128x32 panel the values are accepted and stored but not drawn (`shown: false`). JSON object body. Requires Bearer when auth is enabled.
+
+Held in RAM only, cleared on reboot. The firmware has no wall clock, so send seconds until reset: each window hides itself once its `resets_in` runs out. Each POST replaces both windows; an absent or `null` window clears that bar, and `{}` clears both. `tiny-engineer statusline` sends these from Claude Code's status line ([integration.md](integration.md#usage-limits-on-the-oled)).
+
+| Field | Type | Range |
+| --- | --- | --- |
+| `five_hour` | object or `null` | 5-hour window: `used_percentage` and `resets_in` |
+| `seven_day` | object or `null` | 7-day window: `used_percentage` and `resets_in` |
+| `*.used_percentage` | number | `0`–`100` |
+| `*.resets_in` | integer | `1`–`691200` seconds until the window resets |
+
+```bash
+curl -X POST "http://tiny-engineer.local/usage" -H "Content-Type: application/json" \
+  -d '{"five_hour":{"used_percentage":38,"resets_in":8040},"seven_day":{"used_percentage":17,"resets_in":302400}}'
+```
+
+```json
+{ "ok": true, "five_hour": { "used_percentage": 38, "resets_in": 8040 }, "seven_day": { "used_percentage": 17, "resets_in": 302400 }, "shown": true }
+```
+
+The reply lists what is now held (`null` for a cleared window) with the remaining `resets_in`. Wrong fields return **400** and change nothing:
+
+| `error` | When |
+| --- | --- |
+| `invalid five_hour` | `five_hour` not an object or `null`, or its `used_percentage` / `resets_in` missing or out of range |
+| `invalid seven_day` | Same for `seven_day` |
+
 ### `POST /test/servo`
 
 Smoothly move one servo to an angle at **~140°/s** (`SERVO_MAX_SPEED_DEG_S`) from its last commanded position. JSON body required. Handler blocks until the move finishes.

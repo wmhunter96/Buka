@@ -32,3 +32,5 @@ void handleSetupAudio(WebServer& server);
 void handleSetupOled(WebServer& server);
 
 void handleServosPark(WebServer& server);
+
+void handleUsagePost(WebServer& server);
